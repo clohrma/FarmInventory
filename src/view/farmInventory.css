@@ -1,0 +1,177 @@
+/*
+ * Empty Stylesheet file.
+ */
+
+.mainFxmlClass {
+
+    .mainMenu{
+        -fx-font-size: 12pt;
+        -fx-base: #663399;
+        -fx-background: #FFD801;
+    }
+    
+    .title{
+        -fx-font-size: 18pt;
+        -fx-font-weight: bold;
+    }
+    
+    .loginBtn{
+        -fx-font-size: 12pt;
+    }
+    
+    .loginBtn:hover{
+        -fx-base:  #FF00FF;
+        -fx-font-weight:  bold;
+        -fx-font-size: 12pt;
+    }
+        
+    .allBtn{
+        -fx-font-size: 12pt;
+    }
+    
+    .allBtn:hover{
+        -fx-base:  #808080;
+        -fx-font-weight:  bold;
+        -fx-font-size: 12pt;
+    }
+    
+    .days30Btn{
+        -fx-font-size: 12pt;
+    }
+    
+    .days30Btn:hover{
+        -fx-base:  #808080;
+        -fx-font-weight:  bold;
+        -fx-font-size: 12pt;
+    }
+    
+    .days90Btn{
+        -fx-font-size: 12pt;
+    }
+    
+    .days90Btn:hover{
+        -fx-base:  #808080;
+        -fx-font-weight:  bold;
+        -fx-font-size: 12pt;
+    }
+    
+    .addBtn{
+        -fx-font-size: 12pt;
+    }
+    
+    .addBtn:hover{
+        -fx-base:  #34A56F;
+        -fx-font-weight:  bold;
+        -fx-font-size: 12pt;
+    }
+    
+    .clearBtn{
+        -fx-font-size: 12pt;
+    }
+    
+    .clearBtn:hover{
+        -fx-base:   #DAEE01;
+        -fx-font-weight:  bold;
+        -fx-font-size: 12pt;
+    }
+    
+    .deleteBtn{
+        -fx-font-size: 12pt;
+    }
+    
+    .deleteBtn:hover{
+        -fx-base:     #C11B17;
+        -fx-font-weight:  bold;
+        -fx-font-size: 12pt;
+    }
+    
+    .homedBtn{
+        -fx-font-size: 12pt;
+    }
+    
+    .homedBtn:hover{
+        -fx-base:     #513B1C;
+        -fx-font-weight:  bold;
+        -fx-font-size: 12pt;
+    }
+    
+    .exitBtn{
+        -fx-font-size: 12pt;
+    }
+    
+    .exitBtn:hover{
+        -fx-base:  #0000FF;
+        -fx-font-weight:  bold;
+        -fx-font-size: 12pt;
+    }
+    
+    .springBtn{
+        -fx-font-size: 12pt;
+    }
+    
+    .springBtn:hover{
+        -fx-base: #FFFF00;
+        -fx-font-weight:  bold;
+        -fx-font-size: 12pt;
+    }
+    
+    .summerBtn{
+        -fx-font-size: 12pt;
+    }
+    
+    .summerBtn:hover{
+        -fx-base: #7FFFD4;
+        -fx-font-weight:  bold;
+        -fx-font-size: 12pt;
+    }
+    
+    .fallBtn{
+        -fx-font-size: 12pt;
+    }
+    
+    .fallBtn:hover{
+        -fx-base: #808000;
+        -fx-font-weight:  bold;
+        -fx-font-size: 12pt;
+    }
+    
+    .winterBtn{
+        -fx-font-size: 12pt;
+    }
+    
+    .winterBtn:hover{
+        -fx-base: #00FFFF;
+        -fx-font-weight:  bold;
+        -fx-font-size: 12pt;
+    }
+    
+    .reportMenuBtn{
+        -fx-font-size: 12pt;
+    }
+    
+    .reportMenuBtn:hover{
+        -fx-font-weight:  bold;
+        -fx-font-size: 12pt;
+    }
+    
+    .mainMenuBtn{
+        -fx-font-size: 12pt;
+    }
+    
+    .mainMenuBtn:hover{
+        -fx-font-weight:  bold;
+        -fx-font-size: 12pt;
+    }
+    
+    .headers{
+        -fx-font-size: 18;
+    }
+    
+    .radioButtons{
+        -fx-font-size: 14;
+    }
+    
+    .table-view .column-header .label{
+        -fx-text-fill: #FFFFFF;
+    }
+}

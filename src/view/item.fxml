@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.URL?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane id="AnchorPane" prefHeight="380.0" prefWidth="800.0" styleClass="mainFxmlClass" 
+            xmlns="http://javafx.com/javafx/" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.ItemController">
+    <stylesheets>
+        <URL value="@farmInventory.css" />
+    </stylesheets>
+    <children>
+      <Label alignment="CENTER" layoutX="10.0" layoutY="10.0" prefHeight="30.0" prefWidth="295.0" styleClass="title" text="Food/Supplies">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+      </Label>
+      <GridPane layoutX="10.0" layoutY="40.0" prefHeight="275.0" prefWidth="295.0">
+         <columnConstraints>
+            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="110.0" />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+         </rowConstraints>
+         <children>
+            <Label styleClass="headers" text="Date Purchased:" textAlignment="CENTER" wrapText="true" GridPane.rowIndex="2" />
+            <Label styleClass="headers" text="Name:" GridPane.rowIndex="1" />
+            <Label styleClass="headers" text="Cost:" GridPane.rowIndex="3" />
+            <TextField fx:id="txtItemName" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <TextField fx:id="txtItemCost" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            <DatePicker fx:id="dateItemPurchaseDate" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <Label styleClass="headers" text="Animal For:" GridPane.rowIndex="4" />
+            <Label styleClass="headers" text="Reason:" GridPane.rowIndex="5" />
+            <TextArea fx:id="txtItemReason" prefHeight="200.0" prefWidth="200.0" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+            <Label styleClass="headers" text="Type:" />
+            <ComboBox fx:id="comboItemType" prefWidth="150.0" GridPane.columnIndex="1" />
+            <ComboBox fx:id="comboAnimalFor" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+         </children>
+      </GridPane>
+      <HBox alignment="CENTER" layoutX="10.0" layoutY="340.0" prefHeight="30.0" prefWidth="295.0" spacing="5.0">
+         <children>
+            <Button mnemonicParsing="false" onAction="#onActionAddItem" prefHeight="30.0" prefWidth="100.0" styleClass="addBtn" text="Add" />
+            <Button mnemonicParsing="false" onAction="#onActionDeleteItem" prefHeight="30.0" prefWidth="110.0" styleClass="deleteBtn" text="Delete" />
+            <Button mnemonicParsing="false" onAction="#onActionClearItem" prefHeight="30.0" prefWidth="100.0" styleClass="clearBtn" text="Clear" />
+            <Button mnemonicParsing="false" onAction="#onActionHome" prefHeight="30.0" prefWidth="100.0" styleClass="homedBtn" text="Home" />
+         </children>
+      </HBox>
+      <TableView fx:id="tableItemDisplay" layoutX="320.0" layoutY="5.0" onMouseClicked="#onMouseClickItemRowHandler" prefHeight="370.0" prefWidth="475.0">
+         <columns>
+            <TableColumn fx:id="tblColItemName" prefWidth="150.0" text="Name" />
+            <TableColumn fx:id="tblColItemDate" prefWidth="150.0" text="Date Purchased" />
+            <TableColumn fx:id="tblColItemReason" prefWidth="150.0" text="Reason" />
+         </columns>
+      </TableView>
+   </children>
+</AnchorPane>

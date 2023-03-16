@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.URL?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+
+<AnchorPane id="AnchorPane" prefHeight="250.0" prefWidth="460.0" styleClass="mainFxmlClass" 
+            xmlns="http://javafx.com/javafx/" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.HomeController">
+    <stylesheets>
+        <URL value="@farmInventory.css" />
+    </stylesheets>
+   <children>
+      <Label alignment="CENTER" layoutX="5.0" layoutY="5.0" prefHeight="40.0" prefWidth="450.0" styleClass="title" text="Farm Inventory Home Screen">
+      </Label>
+      <GridPane alignment="CENTER" layoutX="5.0" layoutY="50.0" prefHeight="190.0" prefWidth="450.0">
+        <columnConstraints>
+          <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+          <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#onActionMedications" prefHeight="40.0" prefWidth="185.0" styleClass="mainMenuBtn" text="Medications">
+            </Button>
+            <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#onActionAnimals" prefHeight="40.0" prefWidth="185.0" styleClass="mainMenuBtn" text="Animals" GridPane.columnIndex="1" />
+            <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#onActionItems" prefHeight="40.0" prefWidth="185.0" styleClass="mainMenuBtn" text="Food/Supplies" GridPane.rowIndex="1">
+            </Button>
+            <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#onActionVisits" prefHeight="40.0" prefWidth="185.0" styleClass="mainMenuBtn" text="Visits" GridPane.columnIndex="1" GridPane.rowIndex="1">
+            </Button>
+            <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#onActionReports" prefHeight="40.0" prefWidth="185.0" styleClass="mainMenuBtn" text="Reports Menu" GridPane.rowIndex="2">
+            </Button>
+            <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#onActionExit" prefHeight="40.0" prefWidth="185.0" styleClass="mainMenuBtn" text="Exit" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+         </children>
+      </GridPane>
+   </children>
+</AnchorPane>
