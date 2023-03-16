@@ -117,6 +117,9 @@ public class VisitController implements Initializable{
         if(rbnEmergencyYes.isSelected()){
                 emergency = "Yes";
         }
+        else{
+            emergency = "No";
+        }
         
         if(cuurentID == -1){
             String name = txtName.getText();

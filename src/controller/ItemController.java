@@ -62,8 +62,6 @@ public class ItemController implements Initializable {
     @FXML
     private TextField txtItemCost;
     @FXML
-    private TextField txtItemAnimalName;
-    @FXML
     private TextArea txtItemReason;
     @FXML
     private TableView<Item> tableItemDisplay;
@@ -209,7 +207,7 @@ public class ItemController implements Initializable {
     }
     
     private void refreshItemsTable() throws SQLException{
-        tableItemDisplay.setItems(ItemQueries.getAllfoodSupplyItems());
+        tableItemDisplay.setItems(ItemQueries.getAllItems());
     }
     
     private LocalDate dbToDatePicker (String dbDate){

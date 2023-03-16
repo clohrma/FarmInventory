@@ -2,11 +2,11 @@
 
 <?import java.net.URL?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
 <AnchorPane id="AnchorPane" prefHeight="500.0" prefWidth="800.0" styleClass="mainFxmlClass" 
@@ -15,30 +15,35 @@
       <URL value="@farmInventory.css" />
    </stylesheets>
    <children>
-      <TableView fx:id="tableDisplay" layoutX="160.0" layoutY="55.0" prefHeight="440.0" prefWidth="635.0">
+      <TableView fx:id="tableDisplay" layoutX="160.0" layoutY="55.0" prefHeight="400.0" prefWidth="635.0">
          <columns>
             <TableColumn fx:id="tblColName" prefWidth="110.0" text="Name" />
             <TableColumn fx:id="tblColAnimalFor" minWidth="5.0" prefWidth="110.0" text="Animal For" />
-            <TableColumn fx:id="tblColCost" minWidth="5.0" prefWidth="110.0" text="Cost" />
             <TableColumn fx:id="tblColDate" prefWidth="110.0" text="Date Purchased" />
+            <TableColumn fx:id="tblColCost" minWidth="5.0" prefWidth="110.0" text="Cost" />
             <TableColumn fx:id="tblColType" minWidth="5.0" prefWidth="50.0" text="Type" />
             <TableColumn fx:id="tblColReason" minWidth="5.0" prefWidth="150.0" text="Reason" />
          </columns>
       </TableView>
-      <VBox layoutX="5.0" layoutY="5.0" prefHeight="490.0" prefWidth="155.0" spacing="15.0">
+      <VBox layoutX="5.0" layoutY="55.0" prefHeight="400.0" prefWidth="155.0" spacing="25.0">
          <children>
-            <ComboBox fx:id="comboItemList" prefHeight="30.0" prefWidth="150.0" />
             <Button mnemonicParsing="false" onAction="#onActionAll" prefHeight="30.0" prefWidth="150.0" styleClass="allBtn" text="All" />
             <Button mnemonicParsing="false" onAction="#onAction30Days" prefHeight="30.0" prefWidth="150.0" styleClass="days30Btn" text="30 Days" />
             <Button mnemonicParsing="false" onAction="#onAction90Days" prefHeight="30.0" prefWidth="150.0" styleClass="days90Btn" text="90 Days" />
             <Button mnemonicParsing="false" onAction="#onActionSpring" prefHeight="30.0" prefWidth="150.0" styleClass="springBtn" text="Spring" />
-            <Button mnemonicParsing="false" onAction="#onActionSummer" prefHeight="30.0" prefWidth="150.0" styleClass="summerBtn" text="Summer" />
+            <Button alignment="CENTER" mnemonicParsing="false" onAction="#onActionSummer" prefHeight="30.0" prefWidth="150.0" styleClass="summerBtn" text="Summer" />
             <Button mnemonicParsing="false" onAction="#onActionFall" prefHeight="30.0" prefWidth="150.0" styleClass="fallBtn" text="Fall" />
             <Button mnemonicParsing="false" onAction="#onActionWinter" prefHeight="30.0" prefWidth="150.0" styleClass="winterBtn" text="Winter" />
-            <Button mnemonicParsing="false" onAction="#onActionHome" prefHeight="30.0" prefWidth="150.0" styleClass="homedBtn" text="Hone" />
-            <Button mnemonicParsing="false" onAction="#onActionReportsMenu" prefHeight="30.0" prefWidth="150.0" styleClass="reportMenuBtn" text="Reports Menu" />
          </children>
       </VBox>
-      <Label alignment="CENTER" contentDisplay="CENTER" layoutX="160.0" layoutY="5.0" prefHeight="40.0" prefWidth="635.0" styleClass="title" text="Items Report" />
+      <Label alignment="CENTER" contentDisplay="CENTER" layoutX="5.0" layoutY="5.0" prefHeight="40.0" prefWidth="790.0" styleClass="title" text="Item Report" />
+      <HBox alignment="CENTER" layoutX="160.0" layoutY="455.0" prefHeight="40.0" prefWidth="635.0" spacing="50.0">
+         <children>
+            <Button mnemonicParsing="false" onAction="#onActionReportsMenu" prefHeight="30.0" prefWidth="150.0" styleClass="reportMenuBtn" text="Reports Menu" />
+            <Label styleClass="TotalLbl" text="Total Cost:" />
+            <Label fx:id="showTotalCost" styleClass="TotalLbl" text="\$$$" />
+            <Button mnemonicParsing="false" onAction="#onActionHome" prefHeight="30.0" prefWidth="150.0" styleClass="homedBtn" text="Home" />
+         </children>
+      </HBox>
    </children>
 </AnchorPane>

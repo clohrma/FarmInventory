@@ -174,4 +174,9 @@
     .table-view .column-header .label{
         -fx-text-fill: #FFFFFF;
     }
+    
+    .TotalLbl{
+        -fx-font-weight:  bold;
+        -fx-font-size: 14pt;
+    }
 }

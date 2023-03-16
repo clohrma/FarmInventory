@@ -111,6 +111,9 @@ public class MedicationController implements Initializable {
         if(rbnEmergencyYes.isSelected()){
                 emergency = "Yes";
         }
+        else{
+            emergency = "No";
+        }
         
         if(currentID == -1){
             String name = txtName.getText();

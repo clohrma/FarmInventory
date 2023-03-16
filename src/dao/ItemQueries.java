@@ -63,7 +63,7 @@ public class ItemQueries {
         return rowsAffected;
     }
     
-    public static ObservableList<Item> getAllfoodSupplyItems() throws SQLException{
+    public static ObservableList<Item> getAllItems() throws SQLException{
         ObservableList<Item> allfoodSupplyItems = FXCollections.observableArrayList();
         
         String sql ="SELECT * FROM item;";
