@@ -4,9 +4,15 @@
  */
 package controller;
 
+import dao.MedicationQueries;
 import java.io.IOException;
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.beans.property.ReadOnlyObjectWrapper;
+import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -49,7 +55,30 @@ public class MedicationReportController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
+        tblColMedName.setCellValueFactory(cellData -> {
+            return new ReadOnlyStringWrapper(cellData.getValue().getName());
+        });
+        tblColMedAnimalFor.setCellValueFactory(cellData -> {
+            return new ReadOnlyStringWrapper(cellData.getValue().getAnimalFor());
+        });
+        tblColMedCost.setCellValueFactory(cellData -> {
+            return new ReadOnlyObjectWrapper(cellData.getValue().getCost());
+        });
+        tblColMedDate.setCellValueFactory(cellData -> {
+            return new ReadOnlyStringWrapper(cellData.getValue().getDateOfPurchase());
+        });
+        tblColMedER.setCellValueFactory(cellData -> {
+            return new ReadOnlyStringWrapper(cellData.getValue().getEmergency());
+        });
+        tblColMedReason.setCellValueFactory(cellData -> {
+            return new ReadOnlyStringWrapper(cellData.getValue().getReason());
+        });
+        
+        try {
+            tableDisplay.setItems(MedicationQueries.getAllMeds());
+        } catch (SQLException ex) {
+            Logger.getLogger(MedicationReportController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }    
     
     @FXML

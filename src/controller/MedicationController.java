@@ -107,9 +107,9 @@ public class MedicationController implements Initializable {
         
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd-yyyy");
         int currentID = medID;
-        String emergency = "false";
+        String emergency = "No";
         if(rbnEmergencyYes.isSelected()){
-                emergency = "true";
+                emergency = "Yes";
         }
         
         if(currentID == -1){
@@ -197,7 +197,7 @@ public class MedicationController implements Initializable {
             txtName.setText(name);
             txtAreaReason.setText(reason);
             txtCost.setText(costStr);
-            if(emergency.equalsIgnoreCase("true")){
+            if(emergency.equalsIgnoreCase("Yes")){
                 rbnEmergencyYes.setSelected(true);
             }
             else{

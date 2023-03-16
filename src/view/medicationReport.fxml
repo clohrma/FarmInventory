@@ -27,7 +27,7 @@
       </TableView>
       <VBox layoutX="5.0" layoutY="5.0" prefHeight="490.0" prefWidth="155.0" spacing="15.0">
          <children>
-            <ComboBox fx:id="comboMedList" onAction="#onActionMedList" prefHeight="30.0" prefWidth="150.0" />
+            <ComboBox fx:id="comboMedList" prefHeight="30.0" prefWidth="150.0" />
             <Button mnemonicParsing="false" onAction="#onActionAll" prefHeight="30.0" prefWidth="150.0" styleClass="allBtn" text="All" />
             <Button mnemonicParsing="false" onAction="#onAction30Days" prefHeight="30.0" prefWidth="150.0" styleClass="days30Btn" text="30 Days" />
             <Button mnemonicParsing="false" onAction="#onAction90Days" prefHeight="30.0" prefWidth="150.0" styleClass="days90Btn" text="90 Days" />
@@ -39,6 +39,6 @@
             <Button mnemonicParsing="false" onAction="#onActionReportsMenu" prefHeight="30.0" prefWidth="150.0" styleClass="reportMenuBtn" text="Reports Menu" />
          </children>
       </VBox>
-      <Label alignment="CENTER" contentDisplay="CENTER" layoutX="160.0" layoutY="5.0" prefHeight="40.0" prefWidth="635.0" styleClass="title" text="Visit Report" />
+      <Label alignment="CENTER" contentDisplay="CENTER" layoutX="160.0" layoutY="5.0" prefHeight="40.0" prefWidth="635.0" styleClass="title" text="Medication Report" />
    </children>
 </AnchorPane>

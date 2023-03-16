@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.HBox?>
 
 <AnchorPane id="AnchorPane" prefHeight="500.0" prefWidth="800.0" styleClass="mainFxmlClass" 
-            xmlns="http://javafx.com/javafx/" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.VisitReportsController">
+            xmlns="http://javafx.com/javafx/" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.AnimalReportsController">
    <stylesheets>
       <URL value="@farmInventory.css" />
    </stylesheets>

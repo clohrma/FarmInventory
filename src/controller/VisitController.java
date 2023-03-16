@@ -113,9 +113,9 @@ public class VisitController implements Initializable{
         
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd-yyyy");
         int cuurentID = visitID;
-        String emergency = "false";
+        String emergency = "No";
         if(rbnEmergencyYes.isSelected()){
-                emergency = "true";
+                emergency = "Yes";
         }
         
         if(cuurentID == -1){
@@ -223,7 +223,7 @@ public class VisitController implements Initializable{
             txtName.setText(name);
             txtReason.setText(reason);
             txtCost.setText(costStr);
-            if(emergency.equalsIgnoreCase("true")){
+            if(emergency.equalsIgnoreCase("Yes")){
                     rbnEmergencyYes.setSelected(true);
             }
             else{

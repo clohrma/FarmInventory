@@ -4,9 +4,15 @@
  */
 package controller;
 
+import dao.ItemQueries;
 import java.io.IOException;
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.beans.property.ReadOnlyObjectWrapper;
+import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.fxml.Initializable;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -30,7 +36,7 @@ public class ItemReportsController implements Initializable {
     @FXML
     private ComboBox<String> comboItemList;
     @FXML
-    private TableView<Item> tblvwDisplay;
+    private TableView<Item> tableDisplay;
     @FXML
     private TableColumn<Item, String> tblColAnimalFor;
     @FXML
@@ -38,7 +44,7 @@ public class ItemReportsController implements Initializable {
     @FXML
     private TableColumn<Item, String> tblColDate;
     @FXML
-    private TableColumn<Item, String> tblColER;
+    private TableColumn<Item, String> tblColType;
     @FXML
     private TableColumn<Item, String> tblColName;
     @FXML
@@ -50,7 +56,30 @@ public class ItemReportsController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
+        tblColName.setCellValueFactory(cellData -> {
+            return new ReadOnlyStringWrapper(cellData.getValue().getName());
+        });
+        tblColAnimalFor.setCellValueFactory(cellData -> {
+            return new ReadOnlyStringWrapper(cellData.getValue().getAnimalFor());
+        });
+        tblColCost.setCellValueFactory(cellData -> {
+            return new ReadOnlyObjectWrapper(cellData.getValue().getCost());
+        });
+        tblColDate.setCellValueFactory(cellData -> {
+            return new ReadOnlyStringWrapper(cellData.getValue().getDateOfPurchase());
+        });
+        tblColType.setCellValueFactory(cellData -> {
+            return new ReadOnlyStringWrapper(cellData.getValue().getType());
+        });
+        tblColReason.setCellValueFactory(cellData -> {
+            return new ReadOnlyStringWrapper(cellData.getValue().getReason());
+        });
+        
+        try {
+            tableDisplay.setItems(ItemQueries.getAllfoodSupplyItems());
+        } catch (SQLException ex) {
+            Logger.getLogger(ItemReportsController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
     @FXML
