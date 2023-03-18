@@ -27,8 +27,8 @@
       <Label alignment="CENTER" contentDisplay="CENTER" layoutX="5.0" layoutY="5.0" prefHeight="40.0" prefWidth="790.0" styleClass="title" text="Animal Report" />
       <HBox alignment="CENTER" layoutX="5.0" layoutY="460.0" prefHeight="30.0" prefWidth="790.0" spacing="200.0">
          <children>
-            <Button mnemonicParsing="false" onAction="#onActionHome" prefHeight="30.0" prefWidth="150.0" styleClass="homedBtn" text="Home" />
             <Button mnemonicParsing="false" onAction="#onActionReportsMenu" prefHeight="30.0" prefWidth="150.0" styleClass="reportMenuBtn" text="Reports Menu" />
+            <Button mnemonicParsing="false" onAction="#onActionHome" prefHeight="30.0" prefWidth="150.0" styleClass="homedBtn" text="Home" />
          </children>
       </HBox>
    </children>

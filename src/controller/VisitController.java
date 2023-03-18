@@ -160,13 +160,24 @@ public class VisitController implements Initializable{
         loadingTableview();
     }
 
+    /**
+     * Switches to the Home screen menu. 
+     * If visitID is not -1 it confirms with you changes will not be saved. 
+     * If visitID is -1 it just goes to the Home screen.
+     * @param event
+     * @throws IOException 
+     */
     @FXML
-    private void onActionHome(ActionEvent event) throws IOException {
-        if(confirm.alertConfirm("Leave Without Saving", "Are you sure you want to go back Home?\nUnsave information will be lost?")){
+    public void onActionHome(ActionEvent event) throws IOException {
+        if(visitID != -1){
+            if(confirm.alertConfirm("Leave Without Saving", "Are you sure you want to go back Home?\nUnsave information will be lost?")){
+                switchScreens("/view/Home.fxml", event);
+        }
+        }else {
             switchScreens("/view/Home.fxml", event);
         }
     }
-    
+   
     @FXML
     void onActionClear(ActionEvent event) {
         clearFields();
@@ -175,12 +186,22 @@ public class VisitController implements Initializable{
     @FXML
     private void onMouseClickRowHandler(MouseEvent event) throws Exception {
         clearFields();
-        tableviewSelectHandler(tblvwDisplay.getSelectionModel().getSelectedItem().getVisitID());
+        try {
+            tableviewSelectHandler(tblvwDisplay.getSelectionModel().getSelectedItem().getVisitID());
+        } catch (NullPointerException e){ }
     }
     
-    private LocalDate dbToDatePicker (String dbDate){
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd-yyyy");
-        LocalDate date = LocalDate.parse(dbDate, formatter);
+    /**
+     * Takes the String version of the date, puts it in the order needed, converts it to a LocalDate version.
+     * @param dbDate The String date from the database.
+     * @return 
+     */
+    public LocalDate dbToDatePicker (String dbDate){
+        DateTimeFormatter inputFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        DateTimeFormatter outputFormat = DateTimeFormatter.ofPattern("MM-dd-yyyy");
+        LocalDate date = LocalDate.parse(dbDate, inputFormat);
+        
+        date.format(outputFormat);
         
         return date;
     }

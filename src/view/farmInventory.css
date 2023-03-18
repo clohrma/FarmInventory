@@ -24,7 +24,12 @@
         -fx-font-weight:  bold;
         -fx-font-size: 12pt;
     }
-        
+    
+    .datePicker{
+        -fx-base:  #9370db;
+        -fx-font-weight:  bold;
+    }
+    
     .allBtn{
         -fx-font-size: 12pt;
     }

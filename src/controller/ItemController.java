@@ -97,8 +97,13 @@ public class ItemController implements Initializable {
         }
     }    
     
+    /**
+     * Takes the entered data and creates a new Item then adds it to the database or takes the updated information and updates the database.
+     * @param event
+     * @throws SQLException 
+     */
     @FXML
-    void onActionAddItem(ActionEvent event) throws SQLException {
+    public void onActionAddItem(ActionEvent event) throws SQLException {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd-yyyy");
         int currentID = itemID;
         
@@ -128,10 +133,16 @@ public class ItemController implements Initializable {
         clearFields();
         refreshItemsTable();
     }
-
-
+    
+    /**
+     * Gets the Item ID of the selected item and confirms you want to delete it.
+     * Then sends the request to the database to delete the item. 
+     * After that is done the table view is then reloaded and the text fields are cleared.
+     * @param event
+     * @throws SQLException 
+     */
     @FXML
-    void onActionDeleteItem(ActionEvent event) throws SQLException {
+    public void onActionDeleteItem(ActionEvent event) throws SQLException {
          String name = txtItemName.getText();
         
         if(confirm.alertConfirm("Delete Confirmation", "Are you sure you what to delete " + name + " from the Item's table??")){
@@ -143,14 +154,40 @@ public class ItemController implements Initializable {
         refreshItemsTable();
     }
 
+    /**
+     * Calls the clear fields method when the button is clicked.
+     * @param event 
+     */
     @FXML
-    void onActionClearItem(ActionEvent event) {
+    public void onActionClearItem(ActionEvent event) {
         clearFields();
     }
     
-    private void fillComboAnimalFor() throws SQLException{
+    /**
+     * Switches to the Home screen menu. 
+     * If itemID is not -1 it confirms with you changes will not be saved. 
+     * If itemID is -1 it just goes to the Home screen.
+     * @param event
+     * @throws IOException 
+     */
+    @FXML
+    public void onActionHome(ActionEvent event) throws IOException {
+        if(itemID != -1){
+            if(confirm.alertConfirm("Leave Without Saving", "Are you sure you want to go back Home?\nUnsave information will be lost?")){
+                switchScreens("/view/Home.fxml", event);
+        }
+        }else {
+            switchScreens("/view/Home.fxml", event);
+        }
+    }
+    
+    /**
+     * Brags all the animals from the database and loads the combo box with them.
+     * @throws SQLException 
+     */
+    public void fillComboAnimalFor() throws SQLException{
         
-    String sql = "SELECT name FROM animal";
+        String sql = "SELECT name FROM animal";
         PreparedStatement ps = JDBC.connection.prepareStatement(sql);
         ResultSet rSet = ps.executeQuery();
         while(rSet.next()){
@@ -158,13 +195,25 @@ public class ItemController implements Initializable {
          }
     }
     
+    /**
+     * Clears the text fields. Gets the itemID of the selected item in the table view.
+     * @param event
+     * @throws Exception 
+     */
     @FXML
-    void onMouseClickItemRowHandler(MouseEvent event) throws Exception {
+    public void onMouseClickItemRowHandler(MouseEvent event) throws SQLException {
         clearFields();
-        tableviewSelectHandler(tableItemDisplay.getSelectionModel().getSelectedItem().getItemID());
+        try {
+            tableviewSelectHandler(tableItemDisplay.getSelectionModel().getSelectedItem().getItemID());
+        } catch (NullPointerException e){ }
     }
     
-    private void tableviewSelectHandler(int sentItemID) throws SQLException {
+    /**
+     * Get the information from the database for the selected item and loads the text fields and combo boxes.
+     * @param sentItemID The item ID to search the database.
+     * @throws SQLException 
+     */
+    public void tableviewSelectHandler(int sentItemID) throws SQLException {
         
         PreparedStatement ps = JDBC.connection.prepareStatement("Select * FROM item WHERE itemID = ?");
         ps.setInt(1, sentItemID);
@@ -188,15 +237,10 @@ public class ItemController implements Initializable {
         }
     }
     
-    @FXML
-    void onActionHome(ActionEvent event) throws IOException {
-        if(confirm.alertConfirm("Leave Without Saving", "Are you sure you want to go back Home?\nUnsave information will be lost?")){
-            switchScreens("/view/Home.fxml", event);
-        }
-    }
-    
-    
-    private void clearFields(){
+    /**
+     * Clears all the fields, set itemID back to -1, and sets combo boxes to blank.
+     */
+    public void clearFields(){
 	itemID = -1;
         dateItemPurchaseDate.getEditor().clear();
         comboAnimalFor.valueProperty().set(null);
@@ -206,22 +250,43 @@ public class ItemController implements Initializable {
         comboItemType.valueProperty().set(null);
     }
     
-    private void refreshItemsTable() throws SQLException{
+    /**
+     * Loads or refreshes with the latest items listed from the database to the table view.
+     * @throws SQLException 
+     */
+    public void refreshItemsTable() throws SQLException{
         tableItemDisplay.setItems(ItemQueries.getAllItems());
     }
     
-    private LocalDate dbToDatePicker (String dbDate){
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd-yyyy");
-        LocalDate date = LocalDate.parse(dbDate, formatter);
+    /**
+     * Takes the String version of the date, puts it in the order needed, converts it to a LocalDate version.
+     * @param dbDate The String date from the database.
+     * @return 
+     */
+    public LocalDate dbToDatePicker (String dbDate){
+        DateTimeFormatter inputFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        DateTimeFormatter outputFormat = DateTimeFormatter.ofPattern("MM-dd-yyyy");
+        LocalDate date = LocalDate.parse(dbDate, inputFormat);
+        
+        date.format(outputFormat);
         
         return date;
     }
     
-    private void comboTypeFiller(){
+    /**
+     * Adds the list of Strings to the array list then adds the array list to the combo box.
+     */
+    public void comboTypeFiller(){
         type.addAll("Food", "Supply", "Other");
         comboItemType.setItems(type);
     }
     
+    /**
+     * Makes it easier to switches between screens and not have all this repeated each time the screen is changed.
+     * @param location FXML file name to switch too.
+     * @param actionEvent Stores the action event.
+     * @throws IOException  Throws IO Exception.
+     */
     public void switchScreens(String location, ActionEvent actionEvent) throws IOException {
         
         FXMLLoader loader = new FXMLLoader();

@@ -7,6 +7,8 @@ package dao;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import model.Medication;
@@ -25,7 +27,7 @@ public class MedicationQueries {
         PreparedStatement ps = JDBC.connection.prepareStatement(sql);
         ps.setString(1, name);
         ps.setString(2, animalFor);
-        ps.setString(3, dateOfPurchase);
+        ps.setString(3, programToDatabase(dateOfPurchase));
         ps.setDouble(4, cost);
         ps.setString(5, emergency);
         ps.setString(6, reason);
@@ -43,7 +45,7 @@ public class MedicationQueries {
         ps.setInt(1, medID);
         ps.setString(2, name);
         ps.setString(3, animalFor);
-        ps.setString(4, dateOfPurchase);
+        ps.setString(4, programToDatabase(dateOfPurchase));
         ps.setDouble(5, cost);
         ps.setString(6, emergency);
         ps.setString(7, reason);
@@ -66,14 +68,14 @@ public class MedicationQueries {
     public static ObservableList<Medication> getAllMeds() throws SQLException{
         ObservableList<Medication> allMeds = FXCollections.observableArrayList();
         
-        String sql ="SELECT * FROM medication;";
+        String sql ="SELECT * FROM medication order by dateOfPurchase DESC;";
         PreparedStatement ps = JDBC.connection.prepareStatement(sql);
         ResultSet rs = ps.executeQuery();
         
         while(rs.next()){
             int medID = rs.getInt("medID");
             String name = rs.getString("name");
-            String dateOfPurchase = rs.getString("dateOfPurchase");
+            String dateOfPurchase = dbToStringDate(rs.getString("dateOfPurchase"));
             String animalFor = rs.getString("animalFor");
             double cost = rs.getDouble("cost");
             String reason = rs.getString("reason");
@@ -84,5 +86,23 @@ public class MedicationQueries {
             allMeds.add(newMed);
         }
         return allMeds;
+    }
+    
+    public static String dbToStringDate (String dbDate){
+        DateTimeFormatter inputFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        DateTimeFormatter outputFormat = DateTimeFormatter.ofPattern("MM-dd-yyyy");
+        LocalDate dateLD = LocalDate.parse(dbDate, inputFormat);
+        
+        String date = outputFormat.format(dateLD);
+        return date;
+    }
+    
+    public static String programToDatabase (String dbDate){
+        DateTimeFormatter inputFormat = DateTimeFormatter.ofPattern("MM-dd-yyyy");
+        DateTimeFormatter outputFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate dateLD = LocalDate.parse(dbDate, inputFormat);
+        
+        String date = outputFormat.format(dateLD);
+        return date;
     }
 }

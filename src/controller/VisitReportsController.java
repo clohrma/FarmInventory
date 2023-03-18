@@ -4,20 +4,16 @@
  */
 package controller;
 
-import dao.JDBC;
 import dao.VisitQueries;
 import java.io.IOException;
 import java.math.RoundingMode;
 import java.net.URL;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
@@ -118,17 +114,18 @@ public class VisitReportsController implements Initializable {
     void onAction30Days(ActionEvent event) throws ParseException, SQLException {
         
         double cost = 0.00;
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd-yyyy");
-        ObservableList<Visit> allVisits = VisitQueries.getAllVisits();
-        ObservableList<Visit> filteredVisits = FXCollections.observableArrayList();
-        int monthNum = currentMonthFinder() + 1;
         
-        for(Visit v : allVisits){
+        ObservableList<Visit> filteredVisits = FXCollections.observableArrayList();
+        Calendar currentDate = currentDateFinder();
+        Calendar minus30Days = minus30DaysDateFinder();
+        
+        for(Visit v : VisitQueries.getAllVisits()){
             String serviceDate = v.getDateOfService();
-            LocalDate getDate = LocalDate.parse(serviceDate, formatter);
-            int monthNumber = getDate.getMonthValue();
+            Date dateServiced = new SimpleDateFormat("MM-dd-yyyy", Locale.ENGLISH).parse(serviceDate);
+            Calendar dateBought = Calendar.getInstance();
+            dateBought.setTime(dateServiced);
             
-            if(monthNumber == monthNum){
+            if(dateBought.after(minus30Days) && dateBought.before(currentDate)){
                 filteredVisits.add(v);
                 cost += v.getCost();
             }
@@ -144,18 +141,18 @@ public class VisitReportsController implements Initializable {
     void onAction90Days(ActionEvent event) throws ParseException, SQLException {
         
         double cost = 0.00;
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd-yyyy");
-        ObservableList<Visit> allVisits = VisitQueries.getAllVisits();
-        ObservableList<Visit> filteredVisits = FXCollections.observableArrayList();
-        int monthCur = currentMonthFinder() + 1;
-        int monthTo = currentMonthFinder() + 4;
         
-        for(Visit v : allVisits){
+        ObservableList<Visit> filteredVisits = FXCollections.observableArrayList();
+        Calendar currentDate = currentDateFinder();
+        Calendar minus90Days = minus90DaysDateFinder();
+        
+        for(Visit v : VisitQueries.getAllVisits()){
             String serviceDate = v.getDateOfService();
-            LocalDate getDate = LocalDate.parse(serviceDate, formatter);
-            int monthNumber = getDate.getMonthValue();
+            Date dateServiced = new SimpleDateFormat("MM-dd-yyyy", Locale.ENGLISH).parse(serviceDate);
+            Calendar dateBought = Calendar.getInstance();
+            dateBought.setTime(dateServiced);
             
-            if(monthNumber >= monthCur && monthNumber <= monthTo){
+            if(dateBought.after(minus90Days) && dateBought.before(currentDate)){
                 filteredVisits.add(v);
                 cost += v.getCost();
             }
@@ -273,19 +270,45 @@ public class VisitReportsController implements Initializable {
         
         return totalCost;
     }
-    
-    private int currentMonthFinder() throws ParseException{
-        DateTimeFormatter formatMMM = DateTimeFormatter.ofPattern("MMM");
+    public Calendar currentDateFinder() throws ParseException{
+        DateTimeFormatter formatDate = DateTimeFormatter.ofPattern("MM-dd-yyyy");
         
         LocalDateTime currentDateLDT = LocalDateTime.now();
-        String currentMonth = currentDateLDT.format(formatMMM);
+        String currentDate = currentDateLDT.format(formatDate);
         
-        Date newDate = new SimpleDateFormat("MMM", Locale.ENGLISH).parse(currentMonth);
+        Date newDate = new SimpleDateFormat("MM-dd-yyyy", Locale.ENGLISH).parse(currentDate);
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(newDate);
-        int monthNumber = calendar.get(Calendar.MONTH);
         
-        return monthNumber;
+        return calendar;
+    }
+    
+    public Calendar minus30DaysDateFinder() throws ParseException{
+        DateTimeFormatter formatDate = DateTimeFormatter.ofPattern("MM-dd-yyyy");
+        
+        LocalDateTime currentDateLDT = LocalDateTime.now();
+        String currentDate = currentDateLDT.format(formatDate);
+        
+        Date newDate = new SimpleDateFormat("MM-dd-yyyy", Locale.ENGLISH).parse(currentDate);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(newDate);
+        calendar.add(Calendar.DAY_OF_MONTH, -30);
+        
+        return calendar;
+    }
+    
+    public Calendar minus90DaysDateFinder() throws ParseException{
+        DateTimeFormatter formatDate = DateTimeFormatter.ofPattern("MM-dd-yyyy");
+        
+        LocalDateTime currentDateLDT = LocalDateTime.now();
+        String currentDate = currentDateLDT.format(formatDate);
+        
+        Date newDate = new SimpleDateFormat("MM-dd-yyyy", Locale.ENGLISH).parse(currentDate);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(newDate);
+        calendar.add(Calendar.DAY_OF_MONTH, -90);
+        
+        return calendar;
     }
     
     @FXML

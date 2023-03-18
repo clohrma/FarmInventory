@@ -78,16 +78,32 @@ public class AnimalReportsController implements Initializable {
         }
     }
     
+    /**
+     * Switches to the Home screen.
+     * @param event Stores the mouse event.
+     * @throws IOException  Throws IO Exception.
+     */
     @FXML
     void onActionHome(ActionEvent event) throws IOException {
         switchScreens("/view/Home.fxml", event);
     }
     
+    /**
+     * Switches to the Reports Menu screen.
+     * @param event Stores the mouse event.
+     * @throws IOException  Throws IO Exception.
+     */
     @FXML 
     void onActionReportsMenu(ActionEvent event) throws IOException {
         switchScreens("/view/reportsMenu.fxml", event);
     }
     
+    /**
+     * Makes it easier to switches between screens and not have all this repeated each time the screen is changed.
+     * @param location FXML file name to switch too.
+     * @param actionEvent Stores the action event.
+     * @throws IOException  Throws IO Exception.
+     */
     public void switchScreens(String location, ActionEvent actionEvent) throws IOException {
         
         FXMLLoader loader = new FXMLLoader();

@@ -37,7 +37,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
 import javafx.stage.Stage;
-import model.Animal;
 import model.Medication;
 import utilities.AlertConfirm;
 import utilities.AlertError;
@@ -157,17 +156,30 @@ public class MedicationController implements Initializable {
         clearFields();
     }
     
+    /**
+     * Switches to the Home screen menu. 
+     * If medID is not -1 it confirms with you changes will not be saved. 
+     * If medID is -1 it just goes to the Home screen.
+     * @param event
+     * @throws IOException 
+     */
     @FXML
-    private void onActionHome(ActionEvent event) throws IOException {
-        if(confirm.alertConfirm("Leave Without Saving", "Are you sure you want to go back Home?\nUnsave information will be lost?")){
+    public void onActionHome(ActionEvent event) throws IOException {
+        if(medID != -1){
+            if(confirm.alertConfirm("Leave Without Saving", "Are you sure you want to go back Home?\nUnsave information will be lost?")){
+                switchScreens("/view/Home.fxml", event);
+        }
+        }else {
             switchScreens("/view/Home.fxml", event);
         }
     }
-    
+   
     @FXML
     private void onMouseClickRowHandler(MouseEvent event) throws Exception {
         clearFields();
-        tableviewSelectHandler(tblvwDisplay.getSelectionModel().getSelectedItem().getMedID());
+        try {
+            tableviewSelectHandler(tblvwDisplay.getSelectionModel().getSelectedItem().getMedID());
+        } catch (NullPointerException e){ }
     }
     
     private void fillComboAnimalFor() throws SQLException{
@@ -223,9 +235,17 @@ public class MedicationController implements Initializable {
         tblvwDisplay.setItems(MedicationQueries.getAllMeds());
     }
     
-    private LocalDate dbToDatePicker (String dbDate){
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd-yyyy");
-        LocalDate date = LocalDate.parse(dbDate, formatter);
+    /**
+     * Takes the String version of the date, puts it in the order needed, converts it to a LocalDate version.
+     * @param dbDate The String date from the database.
+     * @return 
+     */
+    public LocalDate dbToDatePicker (String dbDate){
+        DateTimeFormatter inputFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        DateTimeFormatter outputFormat = DateTimeFormatter.ofPattern("MM-dd-yyyy");
+        LocalDate date = LocalDate.parse(dbDate, inputFormat);
+        
+        date.format(outputFormat);
         
         return date;
     }

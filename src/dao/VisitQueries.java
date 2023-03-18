@@ -7,6 +7,8 @@ package dao;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import model.Visit;
@@ -26,7 +28,7 @@ public class VisitQueries {
         PreparedStatement ps = JDBC.connection.prepareStatement(sql);
         ps.setString(1, name);
         ps.setString(2, animalFor);
-        ps.setString(3, dateOfService);
+        ps.setString(3, programToDatabase(dateOfService));
         ps.setString(4, type);
         ps.setDouble(5, cost);
         ps.setString(6, emergency);
@@ -45,7 +47,7 @@ public class VisitQueries {
         ps.setInt(1, visitID);
         ps.setString(2, name);
         ps.setString(3, animalFor);
-        ps.setString(4, dateOfService);
+        ps.setString(4, programToDatabase(dateOfService));
         ps.setString(5, type);
         ps.setDouble(6, cost);
         ps.setString(7, emergency);
@@ -69,14 +71,14 @@ public class VisitQueries {
     public static ObservableList<Visit> getAllVisits() throws SQLException{
         ObservableList<Visit> allVisits = FXCollections.observableArrayList();
         
-        String sql = "SELECT * FROM visit;";
+        String sql = "SELECT * FROM visit order by dateOfService DESC;";
         PreparedStatement ps = JDBC.connection.prepareStatement(sql);
         ResultSet resultSet = ps.executeQuery();
         
         while(resultSet.next()){
             int visitID = resultSet.getInt("visitID");
             String name = resultSet.getString("name");
-            String dateOfService = resultSet.getString("dateOfService");
+            String dateOfService = dbToStringDate(resultSet.getString("dateOfService"));
             String animalFor = resultSet.getString("animalFor");
             double cost = resultSet.getDouble("cost");
             String reason = resultSet.getString("reason");
@@ -88,5 +90,23 @@ public class VisitQueries {
             allVisits.add(newVisit);
         }
         return allVisits;
+    }
+    
+    public static String dbToStringDate (String dbDate){
+        DateTimeFormatter inputFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        DateTimeFormatter outputFormat = DateTimeFormatter.ofPattern("MM-dd-yyyy");
+        LocalDate dateLD = LocalDate.parse(dbDate, inputFormat);
+        
+        String date = outputFormat.format(dateLD);
+        return date;
+    }
+    
+    public static String programToDatabase (String dbDate){
+        DateTimeFormatter inputFormat = DateTimeFormatter.ofPattern("MM-dd-yyyy");
+        DateTimeFormatter outputFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate dateLD = LocalDate.parse(dbDate, inputFormat);
+        
+        String date = outputFormat.format(dateLD);
+        return date;
     }
 }

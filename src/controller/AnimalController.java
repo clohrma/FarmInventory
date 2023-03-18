@@ -104,8 +104,13 @@ public class AnimalController implements Initializable {
         }
     }    
     
+    /**
+     * Takes the entered data and creates a new Animal then adds it to the database or updates the new database with the new data.
+     * @param event Stores the action event.
+     * @throws SQLException  Throws SQL Exception.
+     */
     @FXML
-    void onActionAdd(ActionEvent event) throws SQLException {
+    public void onActionAdd(ActionEvent event) throws SQLException {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd-yyyy");
         int currentID = animalID;
         String altered = "No";
@@ -139,8 +144,15 @@ public class AnimalController implements Initializable {
         refreshAnimalTable();
     }
 
+    /**
+     * Gets the animal ID of the selected animal and confirms you want to delete it.
+     * Then sends the request to the database to delete the animal. 
+     * After that is done the table view is then reloaded and the text fields are cleared.
+     * @param event Stores the action event.
+     * @throws SQLException Throws SQL Exception.
+     */
     @FXML
-    void onActionDelete(ActionEvent event) throws SQLException {
+    public void onActionDelete(ActionEvent event) throws SQLException {
         
         String name = txtName.getText();
         
@@ -152,43 +164,86 @@ public class AnimalController implements Initializable {
         refreshAnimalTable();
     }
     
-    
+    /**
+     * Clears all the fields.
+     * @param event  Stores the mouse event.
+     */
     @FXML
-    void onActionClearOther(ActionEvent event) {
+    public void onActionClearOther(ActionEvent event) {
         clearFields();
     }
 
+    /**
+     *Gets the animal ID of the selected animal in the table view.
+     * @param event Stores the mouse event.
+     * @throws Exception  Throws Exception.
+     */
     @FXML
-    void onMouseClickRowHandler(MouseEvent event) throws Exception {
+    public void onMouseClickRowHandler(MouseEvent event) throws Exception {
         clearFields();
-        tableviewSelectHandler(tblvwDisplay.getSelectionModel().getSelectedItem().getAnimalID());
+        try {
+            tableviewSelectHandler(tblvwDisplay.getSelectionModel().getSelectedItem().getAnimalID());
+        } catch (NullPointerException e){ }
     }
 
+    /**
+     * Switches to the Home screen menu. 
+     * If animalID is not -1 it confirms with you changes will not be saved. 
+     * If animalID is -1 it just goes to the Home screen.
+     * @param event
+     * @throws IOException 
+     */
     @FXML
-    void onActionHome(ActionEvent event) throws IOException {
-        if(confirm.alertConfirm("Leave Without Saving", "Are you sure you want to go back Home?\nUnsave information will be lost?")){
+    public void onActionHome(ActionEvent event) throws IOException {
+        if(animalID != -1){
+            if(confirm.alertConfirm("Leave Without Saving", "Are you sure you want to go back Home?\nUnsave information will be lost?")){
+                switchScreens("/view/Home.fxml", event);
+        }
+        }else {
             switchScreens("/view/Home.fxml", event);
         }
     }
     
-    private void fillComboType(){
+    /**
+     * Fills the animal type field with the list of options.
+     * This prevents misspellings and if needed can be added to here.
+     */
+    public void fillComboType(){
         type.addAll("Horse", "Donkey", "Dog", "Cat", "Chicken", "Duck", "Other");
         comboType.setItems(type);
     }
     
-    private void fillComboGender(){
+    /**
+     * Fills the animal gender field with the list of options.
+     * This prevents misspellings.
+     */
+    public void fillComboGender(){
         gender.addAll("Female", "Male");
         comboGender.setItems(gender);
     }
     
-    private LocalDate dbToDatePicker (String dbDate){
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd-yyyy");
-        LocalDate date = LocalDate.parse(dbDate, formatter);
+    /**
+     * Takes the String version of the date, puts it in the order needed, converts it to a LocalDate version.
+     * @param dbDate The String date from the database.
+     * @return 
+     */
+    public LocalDate dbToDatePicker (String dbDate){
+        DateTimeFormatter inputFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        DateTimeFormatter outputFormat = DateTimeFormatter.ofPattern("MM-dd-yyyy");
+        LocalDate date = LocalDate.parse(dbDate, inputFormat);
+        
+        date.format(outputFormat);
         
         return date;
     }
     
-    private void tableviewSelectHandler(int sentAnimalID) throws SQLException, Exception {
+    /**
+     * 
+     * @param sentAnimalID The ID for the selected animal.
+     * @throws SQLException 
+     * @throws Exception 
+     */
+    public void tableviewSelectHandler(int sentAnimalID) throws SQLException, Exception {
         
         PreparedStatement ps = JDBC.connection.prepareStatement("Select * FROM animal WHERE animalID = ?");
         
@@ -219,7 +274,10 @@ public class AnimalController implements Initializable {
         }
     }
     
-    private void clearFields(){
+    /**
+     * This clears the Text fields, sets animalID back to -1, blanks all the ComboBoxes.
+     */
+    public void clearFields(){
         animalID = -1;
         comboType.valueProperty().set(null);
         comboGender.valueProperty().set(null);
@@ -229,10 +287,20 @@ public class AnimalController implements Initializable {
         txtBreed.clear();
     }
     
+    /**
+     * Updates the TableView to the newest data.
+     * @throws SQLException 
+     */
     private void refreshAnimalTable() throws SQLException{
         tblvwDisplay.setItems(AnimalQueries.getAllAnimals());
     }
     
+    /**
+     * Makes it easier to switches between screens and not have all this repeated each time the screen is changed.
+     * @param location FXML file name to switch too.
+     * @param actionEvent Stores the action event.
+     * @throws IOException  Throws IO Exception.
+     */
     public void switchScreens(String location, ActionEvent actionEvent) throws IOException {
         
         FXMLLoader loader = new FXMLLoader();

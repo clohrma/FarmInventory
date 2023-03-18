@@ -8,6 +8,8 @@ package dao;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import model.Item;
@@ -25,7 +27,7 @@ public class ItemQueries {
         PreparedStatement ps = JDBC.connection.prepareStatement(sql);
         ps.setString(1, name);
         ps.setString(2, animalFor);
-        ps.setString(3, dateOfPurchase);
+        ps.setString(3, programToDatabase(dateOfPurchase));
         ps.setString(4, type);
         ps.setDouble(5, cost);
         ps.setString(6, reason);
@@ -43,7 +45,7 @@ public class ItemQueries {
         ps.setInt(1, itemID);
         ps.setString(2, name);
         ps.setString(3, animalFor);
-        ps.setString(4, dateOfPurchase);
+        ps.setString(4, programToDatabase(dateOfPurchase));
         ps.setString(5, type);
         ps.setDouble(6, cost);
         ps.setString(7, reason);
@@ -66,7 +68,7 @@ public class ItemQueries {
     public static ObservableList<Item> getAllItems() throws SQLException{
         ObservableList<Item> allfoodSupplyItems = FXCollections.observableArrayList();
         
-        String sql ="SELECT * FROM item;";
+        String sql ="SELECT * FROM item order by dateOfPurchase DESC;";
         PreparedStatement ps = JDBC.connection.prepareStatement(sql);
         ResultSet rs = ps.executeQuery();
         
@@ -74,7 +76,7 @@ public class ItemQueries {
             int itemID = rs.getInt("itemID");
             String name = rs.getString("name");
             String animalFor  = rs.getString("animalFor");
-            String dateOfPurchase  = rs.getString("dateOfPurchase");
+            String dateOfPurchase  = dbToStringDate(rs.getString("dateOfPurchase"));
             String type = rs.getString("type");
             double cost = rs.getDouble("cost");
             String reason = rs.getString("reason");
@@ -84,5 +86,23 @@ public class ItemQueries {
             allfoodSupplyItems.add(newItem);
         }
         return allfoodSupplyItems;
+    }
+    
+    public static String dbToStringDate (String dbDate){
+        DateTimeFormatter inputFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        DateTimeFormatter outputFormat = DateTimeFormatter.ofPattern("MM-dd-yyyy");
+        LocalDate dateLD = LocalDate.parse(dbDate, inputFormat);
+        
+        String date = outputFormat.format(dateLD);
+        return date;
+    }
+    
+    public static String programToDatabase (String dbDate){
+        DateTimeFormatter inputFormat = DateTimeFormatter.ofPattern("MM-dd-yyyy");
+        DateTimeFormatter outputFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate dateLD = LocalDate.parse(dbDate, inputFormat);
+        
+        String date = outputFormat.format(dateLD);
+        return date;
     }
 }

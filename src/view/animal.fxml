@@ -41,7 +41,7 @@
             <Label styleClass="headers" text="Type:" />
             <Label styleClass="headers" text="Name:" GridPane.rowIndex="1" />
             <Label styleClass="headers" text="Date of Birth:" GridPane.rowIndex="2" />
-            <DatePicker fx:id="dateBirthdate" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <DatePicker fx:id="dateBirthdate" styleClass="datePicker" GridPane.columnIndex="1" GridPane.rowIndex="2" />
             <TextField fx:id="txtName" GridPane.columnIndex="1" GridPane.rowIndex="1" />
             <Label styleClass="headers" text="Gender:" GridPane.rowIndex="3" />
             <Label styleClass="headers" text="Altered:" GridPane.rowIndex="4" />

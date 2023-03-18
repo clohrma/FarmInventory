@@ -34,31 +34,61 @@ public class HomeController implements Initializable {
         // TODO
     }    
     
+    /**
+     * Switches to the Visit screen menu.
+     * @param event Stores the mouse event.
+     * @throws IOException  Throws IO Exception.
+     */
     @FXML
     void onActionVisits(ActionEvent event) throws IOException {
         switchScreens("/view/visit.fxml", event);
     }
-	
-	@FXML
+    
+    /**
+     * Switches to the Items screen menu.
+     * @param event Stores the mouse event.
+     * @throws IOException  Throws IO Exception.
+     */
+    @FXML
     void onActionItems(ActionEvent event) throws IOException {
         switchScreens("/view/item.fxml", event);
     }
 
+    /**
+     * Switches to the Medication screen menu.
+     * @param event Stores the mouse event.
+     * @throws IOException  Throws IO Exception.
+     */
     @FXML
     void onActionMedications(ActionEvent event) throws IOException {
         switchScreens("/view/medication.fxml", event);
     }
-	
+
+    /**
+     * Switches to the Animals screen menu.
+     * @param event Stores the mouse event.
+     * @throws IOException  Throws IO Exception.
+     */
     @FXML
     void onActionAnimals(ActionEvent event) throws IOException {
         switchScreens("/view/animal.fxml", event);
     }
 
+    /**
+     * Switches to the Reports screen menu.
+     * @param event Stores the mouse event.
+     * @throws IOException  Throws IO Exception.
+     */
     @FXML
     void onActionReports(ActionEvent event) throws IOException {
         switchScreens("/view/reportsMenu.fxml", event);
     }
     
+    /**
+     * Switches to the Exit screen menu.
+     * @param event Stores the mouse event.
+     * @throws IOException  Throws IO Exception.
+     */
     @FXML
     void onActionExit(ActionEvent event) {
         String message = "Are you sure you want to exit the program?";

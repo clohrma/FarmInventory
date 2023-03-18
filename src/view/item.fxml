@@ -46,7 +46,7 @@
             <Label styleClass="headers" text="Cost:" GridPane.rowIndex="3" />
             <TextField fx:id="txtItemName" GridPane.columnIndex="1" GridPane.rowIndex="1" />
             <TextField fx:id="txtItemCost" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-            <DatePicker fx:id="dateItemPurchaseDate" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <DatePicker fx:id="dateItemPurchaseDate" styleClass="datePicker" GridPane.columnIndex="1" GridPane.rowIndex="2" />
             <Label styleClass="headers" text="Animal For:" GridPane.rowIndex="4" />
             <Label styleClass="headers" text="Reason:" GridPane.rowIndex="5" />
             <TextArea fx:id="txtItemReason" prefHeight="200.0" prefWidth="200.0" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="5" />

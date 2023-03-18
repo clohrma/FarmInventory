@@ -58,7 +58,7 @@
                   <RadioButton fx:id="rbnEmergencyNo" graphicTextGap="0.0" mnemonicParsing="false" selected="true" styleClass="radioButtons" text="No" toggleGroup="$rbnGrpEmergency" />
                </children>
             </HBox>
-            <DatePicker fx:id="dateServiceDate" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+            <DatePicker fx:id="dateServiceDate" styleClass="datePicker" GridPane.columnIndex="1" GridPane.rowIndex="5" />
             <Label styleClass="headers" text="Type:" />
             <Label styleClass="headers" text="Reason" GridPane.rowIndex="6" />
             <TextArea fx:id="txtReason" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="6" />

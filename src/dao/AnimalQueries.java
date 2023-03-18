@@ -8,6 +8,8 @@ package dao;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import model.Animal;
@@ -25,7 +27,7 @@ public class AnimalQueries {
         
         PreparedStatement ps = JDBC.connection.prepareStatement(sql);
         ps.setString(1, name);
-        ps.setString(2, dateOfBirth );
+        ps.setString(2, programToDatabase(dateOfBirth));
         ps.setString(3, gender);
         ps.setString(4, altered);
         ps.setString(5, breed);
@@ -44,7 +46,7 @@ public class AnimalQueries {
         PreparedStatement ps = JDBC.connection.prepareStatement(sql);
         ps.setInt(1, animalID);
         ps.setString(2, name);
-        ps.setString(3, dateOfBirth);
+        ps.setString(3, programToDatabase(dateOfBirth));
         ps.setString(4, gender);
         ps.setString(5, altered);
         ps.setString(6, breed);
@@ -69,7 +71,7 @@ public class AnimalQueries {
     public static ObservableList<Animal> getAllAnimals() throws SQLException{
         ObservableList<Animal> allAnimals = FXCollections.observableArrayList();
         
-        String sql = "SELECT * FROM animal";
+        String sql = "SELECT * FROM animal order by dateOfBirth DESC;";
         PreparedStatement ps = JDBC.connection.prepareStatement(sql);
         ResultSet resultSet = ps.executeQuery();
         
@@ -78,7 +80,7 @@ public class AnimalQueries {
             String name = resultSet.getString("name");
             String gender = resultSet.getString("gender");
             String altered = resultSet.getString("altered");
-            String dateOfBirth = resultSet.getString("dateOfBirth");
+            String dateOfBirth = dbToStringDate(resultSet.getString("dateOfBirth"));
             String color = resultSet.getString("color");
             String  breed = resultSet.getString("breed");
             String type = resultSet.getString("type");
@@ -88,5 +90,23 @@ public class AnimalQueries {
             allAnimals.add(newAnimal);
         }
         return allAnimals;
+    }
+    
+    public static String dbToStringDate (String dbDate){
+        DateTimeFormatter inputFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        DateTimeFormatter outputFormat = DateTimeFormatter.ofPattern("MM-dd-yyyy");
+        LocalDate dateLD = LocalDate.parse(dbDate, inputFormat);
+        
+        String date = outputFormat.format(dateLD);
+        return date;
+    }
+    
+    public static String programToDatabase (String dbDate){
+        DateTimeFormatter inputFormat = DateTimeFormatter.ofPattern("MM-dd-yyyy");
+        DateTimeFormatter outputFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate dateLD = LocalDate.parse(dbDate, inputFormat);
+        
+        String date = outputFormat.format(dateLD);
+        return date;
     }
 }

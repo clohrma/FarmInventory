@@ -110,16 +110,18 @@ public class MedicationReportController implements Initializable {
     void onAction30Days(ActionEvent event) throws ParseException, SQLException {
         
         double cost = 0.00;
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd-yyyy");
+        
         ObservableList<Medication> filteredMeds = FXCollections.observableArrayList();
-        int monthNum = currentMonthFinder() + 1;
+        Calendar currentDate = currentDateFinder();
+        Calendar minus30Days = minus30DaysDateFinder();
         
         for(Medication med : MedicationQueries.getAllMeds()){
             String purchaseDate = med.getDateOfPurchase();
-            LocalDate getDate = LocalDate.parse(purchaseDate, formatter);
-            int monthNumber = getDate.getMonthValue();
+            Date datePurchased = new SimpleDateFormat("MM-dd-yyyy", Locale.ENGLISH).parse(purchaseDate);
+            Calendar dateBought = Calendar.getInstance();
+            dateBought.setTime(datePurchased);
             
-            if(monthNumber == monthNum){
+            if(dateBought.after(minus30Days) && dateBought.before(currentDate)){
                 filteredMeds.add(med);
                 cost += med.getCost();
             }
@@ -135,17 +137,18 @@ public class MedicationReportController implements Initializable {
     void onAction90Days(ActionEvent event) throws ParseException, SQLException {
         
         double cost = 0.00;
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd-yyyy");
+        
         ObservableList<Medication> filteredVisits = FXCollections.observableArrayList();
-        int monthCur = currentMonthFinder() + 1;
-        int monthTo = currentMonthFinder() + 4;
+        Calendar currentDate = currentDateFinder();
+        Calendar minus90Days = minus90DaysDateFinder();
         
         for(Medication med : MedicationQueries.getAllMeds()){
             String purchaseDate = med.getDateOfPurchase();
-            LocalDate getDate = LocalDate.parse(purchaseDate, formatter);
-            int monthNumber = getDate.getMonthValue();
+            Date datePurchased = new SimpleDateFormat("MM-dd-yyyy", Locale.ENGLISH).parse(purchaseDate);
+            Calendar dateBought = Calendar.getInstance();
+            dateBought.setTime(datePurchased);
             
-            if(monthNumber >= monthCur && monthNumber <= monthTo){
+            if(dateBought.after(minus90Days) && dateBought.before(currentDate)){
                 filteredVisits.add(med);
                 cost += med.getCost();
             }
@@ -253,19 +256,45 @@ public class MedicationReportController implements Initializable {
             showTotalCost.setText(rounded);
         }
     }
-    
-    private int currentMonthFinder() throws ParseException{
-        DateTimeFormatter formatMMM = DateTimeFormatter.ofPattern("MMM");
+    public Calendar currentDateFinder() throws ParseException{
+        DateTimeFormatter formatDate = DateTimeFormatter.ofPattern("MM-dd-yyyy");
         
         LocalDateTime currentDateLDT = LocalDateTime.now();
-        String currentMonth = currentDateLDT.format(formatMMM);
+        String currentDate = currentDateLDT.format(formatDate);
         
-        Date newDate = new SimpleDateFormat("MMM", Locale.ENGLISH).parse(currentMonth);
+        Date newDate = new SimpleDateFormat("MM-dd-yyyy", Locale.ENGLISH).parse(currentDate);
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(newDate);
-        int monthNumber = calendar.get(Calendar.MONTH);
         
-        return monthNumber;
+        return calendar;
+    }
+    
+    public Calendar minus30DaysDateFinder() throws ParseException{
+        DateTimeFormatter formatDate = DateTimeFormatter.ofPattern("MM-dd-yyyy");
+        
+        LocalDateTime currentDateLDT = LocalDateTime.now();
+        String currentDate = currentDateLDT.format(formatDate);
+        
+        Date newDate = new SimpleDateFormat("MM-dd-yyyy", Locale.ENGLISH).parse(currentDate);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(newDate);
+        calendar.add(Calendar.DAY_OF_MONTH, -30);
+        
+        return calendar;
+    }
+    
+    public Calendar minus90DaysDateFinder() throws ParseException{
+        DateTimeFormatter formatDate = DateTimeFormatter.ofPattern("MM-dd-yyyy");
+        
+        LocalDateTime currentDateLDT = LocalDateTime.now();
+        String currentDate = currentDateLDT.format(formatDate);
+        
+        Date newDate = new SimpleDateFormat("MM-dd-yyyy", Locale.ENGLISH).parse(currentDate);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(newDate);
+        calendar.add(Calendar.DAY_OF_MONTH, -90);
+        
+        return calendar;
     }
     
     @FXML

@@ -93,70 +93,84 @@ public class ItemReportsController implements Initializable {
         }
     }
     
+    /**
+     * Displays all the items in the database, and shows the total of each item added up.
+     * @param event
+     * @throws SQLException 
+     */
     @FXML
-    void onActionAll(ActionEvent event) throws SQLException {
+    public void onActionAll(ActionEvent event) throws SQLException {
         double cost = 0.00;
         for(Item item : ItemQueries.getAllItems()){
             cost += item.getCost();
         }
         tableDisplay.setItems(ItemQueries.getAllItems());
-         DecimalFormat df = new DecimalFormat("#,###.##");
-         df.setRoundingMode(RoundingMode.HALF_UP);
-         String rounded = df.format(cost);
-         showTotalCost.setText(rounded);
+        DecimalFormat decimalFormat = new DecimalFormat("#,###.##");
+        decimalFormat.setRoundingMode(RoundingMode.HALF_UP);
+        String formatedCost = decimalFormat.format(cost);
+        showTotalCost.setText(formatedCost);
     }
     
+    /**
+     * 
+     * @param event
+     * @throws ParseException
+     * @throws SQLException 
+     */
     @FXML
-    void onAction30Days(ActionEvent event) throws ParseException, SQLException {
+    public void onAction30Days(ActionEvent event) throws ParseException, SQLException {
         double cost = 0.00;
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd-yyyy");
+        
         ObservableList<Item> filteredItems = FXCollections.observableArrayList();
-        int monthNum = currentMonthFinder() + 1;
+        Calendar currentDate = currentDateFinder();
+        Calendar minus30Days = minus30DaysDateFinder();
         
         for(Item item : ItemQueries.getAllItems()){
             String purchaseDate = item.getDateOfPurchase();
-            LocalDate getDate = LocalDate.parse(purchaseDate, formatter);
-            int monthNumber = getDate.getMonthValue();
+            Date datePurchased = new SimpleDateFormat("MM-dd-yyyy", Locale.ENGLISH).parse(purchaseDate);
+            Calendar dateBought = Calendar.getInstance();
+            dateBought.setTime(datePurchased);
             
-            if(monthNumber == monthNum){
+            if(dateBought.after(minus30Days) && dateBought.before(currentDate)){
                 filteredItems.add(item);
                 cost += item.getCost();
             }
             tableDisplay.setItems(filteredItems);
-            DecimalFormat df = new DecimalFormat("#,###.##");
-            df.setRoundingMode(RoundingMode.HALF_UP);
-            String rounded = df.format(cost);
-            showTotalCost.setText(rounded);
+            DecimalFormat decimalFormat = new DecimalFormat("#,###.##");
+            decimalFormat.setRoundingMode(RoundingMode.HALF_UP);
+            String formatedCost = decimalFormat.format(cost);
+            showTotalCost.setText(formatedCost);
         }
     }
 
     @FXML
-    void onAction90Days(ActionEvent event) throws ParseException, SQLException {
+    public void onAction90Days(ActionEvent event) throws ParseException, SQLException {
         double cost = 0.00;
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd-yyyy");
-        ObservableList<Item> filteredItems = FXCollections.observableArrayList();
-        int monthCur = currentMonthFinder() + 1;
-        int monthTo = currentMonthFinder() + 4;
         
+        ObservableList<Item> filteredItems = FXCollections.observableArrayList();
+        Calendar currentDate = currentDateFinder();
+        Calendar minus90Days = minus90DaysDateFinder();
+                
         for(Item item : ItemQueries.getAllItems()){
             String purchaseDate = item.getDateOfPurchase();
-            LocalDate getDate = LocalDate.parse(purchaseDate, formatter);
-            int monthNumber = getDate.getMonthValue();
+            Date datePurchased = new SimpleDateFormat("MM-dd-yyyy", Locale.ENGLISH).parse(purchaseDate);
+            Calendar dateBought = Calendar.getInstance();
+            dateBought.setTime(datePurchased);
             
-            if(monthNumber >= monthCur && monthNumber <= monthTo){
+            if(dateBought.after(minus90Days) && dateBought.before(currentDate)){
                 filteredItems.add(item);
                 cost += item.getCost();
             }
             tableDisplay.setItems(filteredItems);
-            DecimalFormat df = new DecimalFormat("#,###.##");
-            df.setRoundingMode(RoundingMode.HALF_UP);
-            String rounded = df.format(cost);
-            showTotalCost.setText(rounded);
+            DecimalFormat decimalFormat = new DecimalFormat("#,###.##");
+            decimalFormat.setRoundingMode(RoundingMode.HALF_UP);
+            String formatedCost = decimalFormat.format(cost);
+            showTotalCost.setText(formatedCost);
         }
     }
 
     @FXML //3, 4, 5
-    void onActionSpring(ActionEvent event) throws ParseException, SQLException {
+    public void onActionSpring(ActionEvent event) throws ParseException, SQLException {
         
         double cost = 0.00;
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd-yyyy");
@@ -172,15 +186,15 @@ public class ItemReportsController implements Initializable {
                 cost += item.getCost();
             }
             tableDisplay.setItems(filteredItems);
-            DecimalFormat df = new DecimalFormat("#,###.##");
-            df.setRoundingMode(RoundingMode.HALF_UP);
-            String rounded = df.format(cost);
-            showTotalCost.setText(rounded);
+            DecimalFormat decimalFormat = new DecimalFormat("#,###.##");
+            decimalFormat.setRoundingMode(RoundingMode.HALF_UP);
+            String formatedCost = decimalFormat.format(cost);
+            showTotalCost.setText(formatedCost);
         }
     }
 
     @FXML //6, 7, 8
-    void onActionSummer(ActionEvent event) throws ParseException, SQLException {
+    public void onActionSummer(ActionEvent event) throws ParseException, SQLException {
         
         double cost = 0.00;
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd-yyyy");
@@ -197,15 +211,15 @@ public class ItemReportsController implements Initializable {
             }
          
             tableDisplay.setItems(filteredItems);
-            DecimalFormat df = new DecimalFormat("#,###.##");
-            df.setRoundingMode(RoundingMode.HALF_UP);
-            String rounded = df.format(cost);
-            showTotalCost.setText(rounded);
+            DecimalFormat decimalFormat = new DecimalFormat("#,###.##");
+            decimalFormat.setRoundingMode(RoundingMode.HALF_UP);
+            String formatedCost = decimalFormat.format(cost);
+            showTotalCost.setText(formatedCost);
         }
     }
     
     @FXML //9, 10, 11
-    void onActionFall(ActionEvent event) throws ParseException, SQLException {
+    public void onActionFall(ActionEvent event) throws ParseException, SQLException {
         
         double cost = 0.00;
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd-yyyy");
@@ -221,15 +235,15 @@ public class ItemReportsController implements Initializable {
                 cost += item.getCost();
             }
             tableDisplay.setItems(filteredItems);
-            DecimalFormat df = new DecimalFormat("#,###.##");
-            df.setRoundingMode(RoundingMode.HALF_UP);
-            String rounded = df.format(cost);
-            showTotalCost.setText(rounded);
+            DecimalFormat decimalFormat = new DecimalFormat("#,###.##");
+            decimalFormat.setRoundingMode(RoundingMode.HALF_UP);
+            String formatedCost = decimalFormat.format(cost);
+            showTotalCost.setText(formatedCost);
         }
     }
 
     @FXML //12, 1, 2
-    void onActionWinter(ActionEvent event) throws ParseException, SQLException {
+    public void onActionWinter(ActionEvent event) throws ParseException, SQLException {
         
         double cost = 0.00;
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd-yyyy");
@@ -245,37 +259,68 @@ public class ItemReportsController implements Initializable {
                 cost += item.getCost();
             }
             tableDisplay.setItems(filteredVisits);
-            DecimalFormat df = new DecimalFormat("#,###.##");
-            df.setRoundingMode(RoundingMode.HALF_UP);
-            String rounded = df.format(cost);
-            showTotalCost.setText(rounded);
+            DecimalFormat decimalFormat = new DecimalFormat("#,###.##");
+            decimalFormat.setRoundingMode(RoundingMode.HALF_UP);
+            String formatedCost = decimalFormat.format(cost);
+            showTotalCost.setText(formatedCost);
         }
     }
     
     @FXML
-    void onActionHome(ActionEvent event) throws IOException {
+    public void onActionHome(ActionEvent event) throws IOException {
         switchScreens("/view/Home.fxml", event);
     }
 
     @FXML
-    void onActionReportsMenu(ActionEvent event) throws IOException {
+    public void onActionReportsMenu(ActionEvent event) throws IOException {
         switchScreens("/view/reportsMenu.fxml", event);
     }
     
-    private int currentMonthFinder() throws ParseException{
-        DateTimeFormatter formatMMM = DateTimeFormatter.ofPattern("MMM");
+    public Calendar currentDateFinder() throws ParseException{
+        DateTimeFormatter formatDate = DateTimeFormatter.ofPattern("MM-dd-yyyy");
         
         LocalDateTime currentDateLDT = LocalDateTime.now();
-        String currentMonth = currentDateLDT.format(formatMMM);
+        String currentDate = currentDateLDT.format(formatDate);
         
-        Date newDate = new SimpleDateFormat("MMM", Locale.ENGLISH).parse(currentMonth);
+        Date newDate = new SimpleDateFormat("MM-dd-yyyy", Locale.ENGLISH).parse(currentDate);
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(newDate);
-        int monthNumber = calendar.get(Calendar.MONTH);
         
-        return monthNumber;
+        return calendar;
     }
     
+    public Calendar minus30DaysDateFinder() throws ParseException{
+        DateTimeFormatter formatDate = DateTimeFormatter.ofPattern("MM-dd-yyyy");
+        
+        LocalDateTime currentDateLDT = LocalDateTime.now();
+        String currentDate = currentDateLDT.format(formatDate);
+        
+        Date newDate = new SimpleDateFormat("MM-dd-yyyy", Locale.ENGLISH).parse(currentDate);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(newDate);
+        calendar.add(Calendar.DAY_OF_MONTH, -30);
+        return calendar;
+    }
+    
+    public Calendar minus90DaysDateFinder() throws ParseException{
+        DateTimeFormatter formatDate = DateTimeFormatter.ofPattern("MM-dd-yyyy");
+        
+        LocalDateTime currentDateLDT = LocalDateTime.now();
+        String currentDate = currentDateLDT.format(formatDate);
+        
+        Date newDate = new SimpleDateFormat("MM-dd-yyyy", Locale.ENGLISH).parse(currentDate);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(newDate);
+        calendar.add(Calendar.DAY_OF_MONTH, -90);
+        return calendar;
+    }
+    
+    /**
+     * Makes it easier to switches between screens and not have all this repeated each time the screen is changed.
+     * @param location FXML file name to switch too.
+     * @param actionEvent Stores the action event.
+     * @throws IOException  Throws IO Exception.
+     */
      public void switchScreens(String location, ActionEvent actionEvent) throws IOException {
         
         FXMLLoader loader = new FXMLLoader();
