@@ -12,8 +12,10 @@ import java.net.URL;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Calendar;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -41,9 +43,8 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import model.Visit;
 import utilities.AlertConfirm;
-import utilities.AlertError;
 import utilities.AlertInfo;
-import utilities.AlertWarning;
+import utilities.Dates;
 
 /**
  * FXML Controller class
@@ -54,6 +55,7 @@ public class VisitController implements Initializable{
     
     ObservableList<String> type = FXCollections.observableArrayList();
     int visitID = -1;
+    Dates dates = new Dates();
 
     @FXML
     private ComboBox<String> comboType;
@@ -101,15 +103,20 @@ public class VisitController implements Initializable{
         });
         comboTypeFiller();
         try {
-            loadingTableview();
+            refreshVisitsTable();
             fillComboAnimalFor();
         } catch (SQLException ex) {
             Logger.getLogger(VisitController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
+    /**
+     * Takes the entered data and creates a new Visit then adds it to the database or takes the updated information and updates the database.
+     * @param event
+     * @throws SQLException 
+     */
     @FXML
-    private void onActionAdd(ActionEvent event) throws SQLException {
+    public void onActionAdd(ActionEvent event) throws SQLException, ParseException {
         
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd-yyyy");
         int cuurentID = visitID;
@@ -121,43 +128,56 @@ public class VisitController implements Initializable{
             emergency = "No";
         }
         
-        if(cuurentID == -1){
-            String name = txtName.getText();
-            String reason = txtReason.getText();
-            String type = comboType.getValue();
-            String animalFor = comboAnimalFor.getValue();
-            LocalDate getDate = dateServiceDate.getValue();
-            String dateOfService = getDate.format(formatter);
-            double cost = Double.parseDouble(txtCost.getText());
-            
-            VisitQueries.insert(name, animalFor, dateOfService, type, cost, emergency, reason);
-        }
-        else{
-            String name = txtName.getText();
-            String reason = txtReason.getText();
-            String type = comboType.getValue();
-            String animalFor = comboAnimalFor.getValue();
-            LocalDate getDate = dateServiceDate.getValue();
-            String dateOfService = getDate.format(formatter);
-            double cost = Double.parseDouble(txtCost.getText());
+        if(fieldCheck()){
+            if(cuurentID == -1){
+                String name = txtName.getText();
+                String reason = txtReason.getText();
+                String type = comboType.getValue();
+                String animalFor = comboAnimalFor.getValue();
+                LocalDate getDate = dateServiceDate.getValue();
+                String dateOfService = getDate.format(formatter);
+                double cost = Double.parseDouble(txtCost.getText());
 
-            VisitQueries.update(cuurentID, name, animalFor, dateOfService, type, cost, emergency, reason);
+                VisitQueries.insert(name, animalFor, dateOfService, type, cost, emergency, reason);
+            }
+            else{
+                String name = txtName.getText();
+                String reason = txtReason.getText();
+                String type = comboType.getValue();
+                String animalFor = comboAnimalFor.getValue();
+                LocalDate getDate = dateServiceDate.getValue();
+                String dateOfService = getDate.format(formatter);
+                double cost = Double.parseDouble(txtCost.getText());
+
+                VisitQueries.update(cuurentID, name, animalFor, dateOfService, type, cost, emergency, reason);
+            }
+            clearFields();
+            refreshVisitsTable();
         }
-        clearFields();
-        loadingTableview();
     }
 
+    /**
+     * Gets the Visit ID of the selected visit and confirms you want to delete it.
+     * Then sends the request to the database to delete the visit. 
+     * After that is done the table view is then reloaded and the text fields are cleared.
+     * @param event
+     * @throws SQLException 
+     */
     @FXML
-    private void onActionDelete(ActionEvent event) throws SQLException {
+    public void onActionDelete(ActionEvent event) throws SQLException {
         
         String name = txtName.getText();
-        
-        if(confirm.alertConfirm("Delete Confirmation", "Are you sure you what to delete " + name + " from the Visit's table?")){
-            VisitQueries.delete(visitID);
-            infoAlert.alertInfomation("Information Dialog", "" + name + " has been deleted from the Visit's table.");
+        if(visitID != -1){
+            if(confirm.alertConfirm("Delete Confirmation", "Are you sure you what to delete " + name + " from the Visit's table?")){
+                VisitQueries.delete(visitID);
+                infoAlert.alertInfomation("Information Dialog", "" + name + " has been deleted from the Visit's table.");
+            }
+        }
+        else{
+            infoAlert.alertInfomation("Select an Animal to Delete", "Please select an Animal to delete.");
         }
         clearFields();
-        loadingTableview();
+        refreshVisitsTable();
     }
 
     /**
@@ -177,14 +197,23 @@ public class VisitController implements Initializable{
             switchScreens("/view/Home.fxml", event);
         }
     }
-   
+    
+    /**
+     * Calls the clear fields method when the button is clicked.
+     * @param event 
+     */
     @FXML
-    void onActionClear(ActionEvent event) {
+    public void onActionClear(ActionEvent event) {
         clearFields();
     }
     
+    /**
+     * 
+     * @param event
+     * @throws Exception 
+     */
     @FXML
-    private void onMouseClickRowHandler(MouseEvent event) throws Exception {
+    public void onMouseClickRowHandler(MouseEvent event) throws Exception {
         clearFields();
         try {
             tableviewSelectHandler(tblvwDisplay.getSelectionModel().getSelectedItem().getVisitID());
@@ -206,16 +235,27 @@ public class VisitController implements Initializable{
         return date;
     }
     
-    private void loadingTableview() throws SQLException{
+    /**
+     * Loads or refreshes the table view with the latest visits listed from the database to the table view.
+     * @throws SQLException 
+     */
+    public void refreshVisitsTable() throws SQLException{
         tblvwDisplay.setItems(VisitQueries.getAllVisits());
     }
     
-    private void comboTypeFiller(){
+    /**
+     * Adds the list of Strings to the array list then adds the array list to the combo box.
+     */
+    public void comboTypeFiller(){
         type.addAll("Farrier", "Veterinarian", "Other");
         comboType.setItems(type);
     }
     
-    private void fillComboAnimalFor() throws SQLException{
+    /**
+     * Brings all the animal names listed in the database and loads the combo box with them.
+     * @throws SQLException 
+     */
+    public void fillComboAnimalFor() throws SQLException{
         
     String sql = "SELECT name FROM animal";
         PreparedStatement ps = JDBC.connection.prepareStatement(sql);
@@ -224,8 +264,14 @@ public class VisitController implements Initializable{
             comboAnimalFor.getItems().add(rSet.getString("name"));
          }
     }
-        
-    private void tableviewSelectHandler(int sentVisitID) throws SQLException, Exception {
+    
+    /**
+     * Get the information from the database for the selected item and loads the text fields and combo boxes.
+     * @param sentVisitID The visit ID to search the database.
+     * @throws SQLException
+     * @throws Exception 
+     */
+    public void tableviewSelectHandler(int sentVisitID) throws SQLException, Exception {
         
         PreparedStatement ps = JDBC.connection.prepareStatement("Select * FROM visit WHERE visitID = ?");
         ps.setInt(1, sentVisitID);
@@ -256,7 +302,10 @@ public class VisitController implements Initializable{
         }
     }
     
-    private void clearFields(){
+    /**
+     * Clears all the fields, set visitID back to -1, and sets combo boxes to blank.
+     */
+    public void clearFields(){
         visitID = -1;
         comboType.valueProperty().set(null);
         dateServiceDate.getEditor().clear();
@@ -267,6 +316,76 @@ public class VisitController implements Initializable{
         rbnEmergencyNo.setSelected(true);
     }
     
+    /**
+     * Checks all the fields for information and displays an error message if there are.
+     * @return True if there are no errors, and False if there are errors.
+     * @throws ParseException 
+     */
+    public boolean fieldCheck() throws ParseException{
+        double cost = -1;
+        
+	String type = comboType.getValue();
+        String reason = txtReason.getText();
+        
+        String name = txtName.getText();
+        String animalName = comboAnimalFor.getValue();
+        LocalDate serviceDate = dateServiceDate.getValue();
+        String error = "";
+        
+        try{
+            cost = Double.parseDouble(txtCost.getText());
+        }catch(NumberFormatException e){
+            error += "Cost needs to be in a numbers like 0.00 or 0";
+        }
+		
+        if(type == null || type.length() == 0){
+            error += "\n\nType field is blank, please select a type.";
+        }
+        
+        if(reason == null || reason.length() == 0){
+            error += "\n\nReaon field is blank, please select a type.";
+        }
+		
+        if(cost == -1){
+            error += "\n\nCost field is blank, please select a type.";
+        }
+		
+        if(name == null || name.length() == 0){
+            error += "\n\nName field is blank, please select a type.";
+        }
+		
+        if(animalName == null || animalName.length() == 0){
+            error += "\n\nAnimal for field is blank, please select a type.";
+        }
+		
+        if(serviceDate == null){
+            error += "\n\nService Date field is blank, please select a type.";
+        }
+        
+        Calendar currentDate = dates.currentDateFinder();
+        Calendar purchaseDateCalendar = dates.convertDateToCalendar(serviceDate);
+        if(currentDate.before(purchaseDateCalendar)){
+            error += "\n\nThe purchase date selected is in the future, please select current date or before.";
+        }
+        
+        if(error.length() == 0){
+            return true;
+        }
+        else{
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Warning Dialog");
+            alert.setContentText(error);
+            alert.showAndWait();
+            return false;
+        }
+    }
+    
+    /**
+     * Makes it easier to switches between screens and not have all this repeated each time the screen is changed.
+     * @param location FXML file name to switch too.
+     * @param actionEvent Stores the action event.
+     * @throws IOException  Throws IO Exception.
+     */
      public void switchScreens(String location, ActionEvent actionEvent) throws IOException {
         
         FXMLLoader loader = new FXMLLoader();
@@ -277,20 +396,6 @@ public class VisitController implements Initializable{
         stage.setScene(new Scene(scene));
         stage.show();
     }
-     
-    AlertWarning warning = (title, message) -> {
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle(title);
-        alert.setContentText(message);
-        alert.showAndWait();
-    };
-    
-    AlertError error = (dialog, message) -> {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle(dialog);
-        alert.setContentText(message);
-        alert.showAndWait();
-    };
     
     AlertInfo infoAlert = (dialog, message) -> {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);

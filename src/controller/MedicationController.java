@@ -11,8 +11,10 @@ import java.net.URL;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.time.format.DateTimeFormatter;
 import java.time.LocalDate;
+import java.util.Calendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.Optional;
@@ -39,9 +41,8 @@ import javafx.scene.control.ComboBox;
 import javafx.stage.Stage;
 import model.Medication;
 import utilities.AlertConfirm;
-import utilities.AlertError;
 import utilities.AlertInfo;
-import utilities.AlertWarning;
+import utilities.Dates;
 
 
 
@@ -53,6 +54,7 @@ import utilities.AlertWarning;
 public class MedicationController implements Initializable {
     
     int medID = -1;
+    Dates dates = new Dates();
     
     @FXML
     private DatePicker datePurchaseDate;
@@ -100,9 +102,13 @@ public class MedicationController implements Initializable {
             Logger.getLogger(VisitController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+    /**
+     * Takes the entered data and creates a new Medication then adds it to the database or takes the updated information and updates the database.
+     * @param event
+     * @throws SQLException 
+     */
     @FXML
-    private void onActionAdd(ActionEvent event) throws SQLException {
+    public void onActionAdd(ActionEvent event) throws SQLException, ParseException{
         
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd-yyyy");
         int currentID = medID;
@@ -114,45 +120,62 @@ public class MedicationController implements Initializable {
             emergency = "No";
         }
         
-        if(currentID == -1){
-            String name = txtName.getText();
-            String reason = txtAreaReason.getText();
-            String animalFor = comboAnimalFor.getValue();
-            LocalDate getDate = datePurchaseDate.getValue();
-            String dateOfPurchase = getDate.format(formatter);
-            double cost = Double.parseDouble(txtCost.getText());
-            
-            MedicationQueries.insert(name, animalFor, dateOfPurchase, cost, emergency, reason);
+        if(fieldCheck()){
+            if(currentID == -1){
+                String name = txtName.getText();
+                String reason = txtAreaReason.getText();
+                String animalFor = comboAnimalFor.getValue();
+                LocalDate getDate = datePurchaseDate.getValue();
+                String dateOfPurchase = getDate.format(formatter);
+                double cost = Double.parseDouble(txtCost.getText());
+
+                MedicationQueries.insert(name, animalFor, dateOfPurchase, cost, emergency, reason);
+            }
+            else{
+                String name = txtName.getText();
+                String reason = txtAreaReason.getText();
+                String animalFor = comboAnimalFor.getValue();
+                LocalDate getDate = datePurchaseDate.getValue();
+                String dateOfPurchase = getDate.format(formatter);
+                double cost = Double.parseDouble(txtCost.getText());
+
+                MedicationQueries.update(currentID, name, animalFor, dateOfPurchase, cost, emergency, reason);
+            }
+            clearFields();
+            refreshMedTable();
         }
-        else{
-            String name = txtName.getText();
-            String reason = txtAreaReason.getText();
-            String animalFor = comboAnimalFor.getValue();
-            LocalDate getDate = datePurchaseDate.getValue();
-            String dateOfPurchase = getDate.format(formatter);
-            double cost = Double.parseDouble(txtCost.getText());
-            
-            MedicationQueries.update(currentID, name, animalFor, dateOfPurchase, cost, emergency, reason);
-        }
-        clearFields();
-        refreshMedTable();
     }
 
+    /**
+     * Gets the Medication ID of the selected med and confirms that you want to delete it.
+     * Then sends the request to the database to delete the medication. 
+     * After that is done the table view is then reloaded and the text fields are cleared.
+     * @param event
+     * @throws SQLException 
+     */
     @FXML
-    private void onActionDelete(ActionEvent event) throws SQLException {
+    public void onActionDelete(ActionEvent event) throws SQLException {
         
         String name = txtName.getText();
-        
-        if(confirm.alertConfirm("Delete Confirmation", "Are you sure you what to delete, " + name + " from the Medication's table?")){
-            MedicationQueries.delete(medID);
-            infoAlert.alertInfomation("Information Dialog", "" + name + " has been deleted from the Medication's table.");
+        if(medID != -1){
+            if(confirm.alertConfirm("Delete Confirmation", "Are you sure you what to delete, " + name + " from the Medication's table?")){
+                MedicationQueries.delete(medID);
+                infoAlert.alertInfomation("Information Dialog", "" + name + " has been deleted from the Medication's table.");
+            }
+        }
+        else{
+            infoAlert.alertInfomation("Select an Animal to Delete", "Please select an Animal to delete.");
         }
         clearFields();
         refreshMedTable();
     }
     
+    /**
+     * Calls the clear fields method when the button is clicked.
+     * @param event 
+     */
     @FXML
-    private void onActionClear(ActionEvent event) {
+    public void onActionClear(ActionEvent event) {
         clearFields();
     }
     
@@ -173,16 +196,25 @@ public class MedicationController implements Initializable {
             switchScreens("/view/Home.fxml", event);
         }
     }
-   
+    
+    /**
+     * Clears the text fields. Gets the medID of the selected medication in the table view.
+     * @param event
+     * @throws Exception 
+     */
     @FXML
-    private void onMouseClickRowHandler(MouseEvent event) throws Exception {
+    public void onMouseClickRowHandler(MouseEvent event) throws Exception {
         clearFields();
         try {
             tableviewSelectHandler(tblvwDisplay.getSelectionModel().getSelectedItem().getMedID());
         } catch (NullPointerException e){ }
     }
     
-    private void fillComboAnimalFor() throws SQLException{
+    /**
+     * Brings all the animal names listed in the database and loads the combo box with them.
+     * @throws SQLException 
+     */
+    public void fillComboAnimalFor() throws SQLException{
         
     String sql = "SELECT name FROM animal";
         PreparedStatement ps = JDBC.connection.prepareStatement(sql);
@@ -192,7 +224,13 @@ public class MedicationController implements Initializable {
          }
     }
     
-    private void tableviewSelectHandler(int sentMedID) throws SQLException, Exception {
+    /**
+     * Get the information from the database for the selected medication and loads the text fields and combo boxes.
+     * @param sentMedID The medication ID to search the database.
+     * @throws SQLException
+     * @throws Exception 
+     */
+    public void tableviewSelectHandler(int sentMedID) throws SQLException, Exception {
         
         PreparedStatement ps = JDBC.connection.prepareStatement("Select * FROM medication WHERE medID = ?");
         ps.setInt(1, sentMedID);
@@ -221,7 +259,10 @@ public class MedicationController implements Initializable {
         }
     }
     
-    private void clearFields(){
+    /**
+     * Clears all the fields, set medID back to -1, and sets combo boxes to blank.
+     */
+    public void clearFields(){
         medID = -1;
         datePurchaseDate.getEditor().clear();
         comboAnimalFor.valueProperty().set(null);
@@ -231,7 +272,11 @@ public class MedicationController implements Initializable {
         rbnEmergencyNo.setSelected(true);
     }
     
-    private void refreshMedTable() throws SQLException{
+    /**
+     * Loads or refreshes the table view with the latest medications listed from the database to the table view.
+     * @throws SQLException 
+     */
+    public void refreshMedTable() throws SQLException{
         tblvwDisplay.setItems(MedicationQueries.getAllMeds());
     }
     
@@ -250,6 +295,66 @@ public class MedicationController implements Initializable {
         return date;
     }
     
+    /**
+     * Checks all the fields for information and displays an error message if there are.
+     * @return True if there are no errors, and False if there are errors.
+     * @throws ParseException 
+     */
+    public boolean fieldCheck() throws ParseException{
+        double cost = -1;
+        
+        String error = "";
+        String reason = txtAreaReason.getText();
+        String name = txtName.getText();
+        String animalName = comboAnimalFor.getValue();
+        LocalDate purchaseDate = datePurchaseDate.getValue();
+        
+        try{
+            cost = Double.parseDouble(txtCost.getText());
+        }catch(NumberFormatException e){
+            error += "Cost needs to be in a numbers like 0.00 or 0";
+        }
+        
+        if(reason == null || reason.length() == 0){
+            error += "\n\nReaon field is blank, please select a type.";
+        }
+        if(cost == -1){
+            error += "\n\nCost field is 0.00 or blank, please select a type.";
+        }
+        if(name == null || name.length() == 0){
+            error += "\n\nName field is blank, please select a type.";
+        }
+        if(animalName == null || animalName.length() == 0){
+            error += "\n\nAnimal for field is blank, please select a type.";
+        }
+        if(purchaseDate == null){
+            error += "\n\nPurchase Date field is blank, please select a type.";
+        }
+        
+        Calendar currentDate = dates.currentDateFinder();
+        Calendar purchaseDateCalendar = dates.convertDateToCalendar(purchaseDate);
+        if(currentDate.before(purchaseDateCalendar)){
+            error += "\n\nThe purchase date selected is in the future, please select current date or before.";
+        }
+        
+        if(error.length() == 0){
+            return true;
+        }
+        else{
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Warning Dialog");
+            alert.setContentText(error);
+            alert.showAndWait();
+            return false;
+        }
+    }
+    
+    /**
+     * Makes it easier to switches between screens and not have all this repeated each time the screen is changed.
+     * @param location FXML file name to switch too.
+     * @param actionEvent Stores the action event.
+     * @throws IOException  Throws IO Exception.
+     */
     public void switchScreens(String location, ActionEvent actionEvent) throws IOException {
         
         FXMLLoader loader = new FXMLLoader();
@@ -261,20 +366,6 @@ public class MedicationController implements Initializable {
         stage.show();
     }
     
-    AlertWarning warning = (title, message) -> {
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle(title);
-        alert.setContentText(message);
-        alert.showAndWait();
-    };
-    
-    AlertError error = (dialog, message) -> {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle(dialog);
-        alert.setContentText(message);
-        alert.showAndWait();
-    };
-    
     AlertInfo infoAlert = (dialog, message) -> {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(dialog);
@@ -283,6 +374,7 @@ public class MedicationController implements Initializable {
     };
     
     AlertConfirm confirm = (title, contentText) -> {
+        
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle(title);
         alert.setContentText(contentText);

@@ -11,8 +11,10 @@ import java.net.URL;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Calendar;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -39,9 +41,8 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import model.Item;
 import utilities.AlertConfirm;
-import utilities.AlertError;
 import utilities.AlertInfo;
-import utilities.AlertWarning;
+import utilities.Dates;
 
 /**
  * FXML Controller class
@@ -52,6 +53,7 @@ public class ItemController implements Initializable {
 
     ObservableList<String> type = FXCollections.observableArrayList();
     int itemID = -1;
+    Dates dates = new Dates();
     
     @FXML
     private ComboBox<String> comboItemType;
@@ -101,37 +103,39 @@ public class ItemController implements Initializable {
      * Takes the entered data and creates a new Item then adds it to the database or takes the updated information and updates the database.
      * @param event
      * @throws SQLException 
+     * @throws java.text.ParseException 
      */
     @FXML
-    public void onActionAddItem(ActionEvent event) throws SQLException {
+    public void onActionAddItem(ActionEvent event) throws SQLException, ParseException {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd-yyyy");
         int currentID = itemID;
-        
-        if(currentID == -1){
-            String name = txtItemName.getText();
-            String reason = txtItemReason.getText();
-            String animalFor = comboAnimalFor.getValue();
-            LocalDate getDate = dateItemPurchaseDate.getValue();
-            String dateOfPurchase = getDate.format(formatter);
-            String type = comboItemType.getValue();
-            double cost = Double.parseDouble(txtItemCost.getText());
-            
-            ItemQueries.insert(name, animalFor, dateOfPurchase, type, cost, reason);
+        if(fieldCheck()){
+            if(currentID == -1){
+                String name = txtItemName.getText();
+                String reason = txtItemReason.getText();
+                String animalFor = comboAnimalFor.getValue();
+                LocalDate getDate = dateItemPurchaseDate.getValue();
+                String dateOfPurchase = getDate.format(formatter);
+                String type = comboItemType.getValue();
+                double cost = Double.parseDouble(txtItemCost.getText());
+
+                ItemQueries.insert(name, animalFor, dateOfPurchase, type, cost, reason);
+            }
+            else{
+                int currentItemID = itemID;
+                String name = txtItemName.getText();
+                String reason = txtItemReason.getText();
+                String animalFor = comboAnimalFor.getValue();
+                LocalDate getDate = dateItemPurchaseDate.getValue();
+                String dateOfPurchase = getDate.format(formatter);
+                String type = comboItemType.getValue();
+                double cost = Double.parseDouble(txtItemCost.getText());
+
+                ItemQueries.update(currentItemID, name, animalFor, dateOfPurchase, type, cost, reason);
+            }
+            clearFields();
+            refreshItemsTable();
         }
-        else{
-            int currentItemID = itemID;
-            String name = txtItemName.getText();
-            String reason = txtItemReason.getText();
-            String animalFor = comboAnimalFor.getValue();
-            LocalDate getDate = dateItemPurchaseDate.getValue();
-            String dateOfPurchase = getDate.format(formatter);
-            String type = comboItemType.getValue();
-            double cost = Double.parseDouble(txtItemCost.getText());
-            
-            ItemQueries.update(currentItemID, name, animalFor, dateOfPurchase, type, cost, reason);
-        }
-        clearFields();
-        refreshItemsTable();
     }
     
     /**
@@ -144,11 +148,14 @@ public class ItemController implements Initializable {
     @FXML
     public void onActionDeleteItem(ActionEvent event) throws SQLException {
          String name = txtItemName.getText();
-        
-        if(confirm.alertConfirm("Delete Confirmation", "Are you sure you what to delete " + name + " from the Item's table??")){
-            ItemQueries.delete(itemID);
-            infoAlert.alertInfomation("Information Dialog", "" + name + " has been deleted from the Item's table.");
-            
+        if(itemID != -1){
+            if(confirm.alertConfirm("Delete Confirmation", "Are you sure you what to delete " + name + " from the Item's table??")){
+                ItemQueries.delete(itemID);
+                infoAlert.alertInfomation("Information Dialog", "" + name + " has been deleted from the Item's table.");
+            }
+        }
+        else{
+            infoAlert.alertInfomation("Select an Animal to Delete", "Please select an Animal to delete.");
         }
         clearFields();
         refreshItemsTable();
@@ -182,7 +189,7 @@ public class ItemController implements Initializable {
     }
     
     /**
-     * Brags all the animals from the database and loads the combo box with them.
+     * Brings all the animal names listed in the database and loads the combo box with them.
      * @throws SQLException 
      */
     public void fillComboAnimalFor() throws SQLException{
@@ -251,7 +258,7 @@ public class ItemController implements Initializable {
     }
     
     /**
-     * Loads or refreshes with the latest items listed from the database to the table view.
+     * Loads or refreshes the table view with the latest items listed from the database to the table view.
      * @throws SQLException 
      */
     public void refreshItemsTable() throws SQLException{
@@ -282,6 +289,65 @@ public class ItemController implements Initializable {
     }
     
     /**
+     * Checks all the fields for information and displays an error message if there are.
+     * @return True if there are no errors, and False if there are errors.
+     * @throws ParseException 
+     */
+    public boolean fieldCheck() throws ParseException{
+        double cost = -1;
+        
+        String type = comboItemType.getValue();
+        String reason = txtItemReason.getText();
+        String name = txtItemName.getText();
+        String animalName = comboAnimalFor.getValue();
+        LocalDate purchaseDate = dateItemPurchaseDate.getValue();
+        String error = "";
+        
+        try{
+            cost = Double.parseDouble(txtItemCost.getText());
+        }catch(NumberFormatException e){
+            error += "Cost needs to be in a numbers like 0.00 or 0";
+        }
+        
+        if(type == null || type.length() == 0){
+            error += "\n\nType field is blank, please select a type.";
+        }
+        
+        if(reason == null || reason.length() == 0){
+            error += "\n\nReason field is blank, please select a type.";
+        }
+        if(cost == -1){
+            error += "\n\nCost field is blank, please select a type.";
+        }
+        if(name == null || name.length() == 0){
+            error += "\n\nName field is blank, please select a type.";
+        }
+        if(animalName == null || animalName.length() == 0){
+            error += "\n\nAnimal for field is blank, please select a type.";
+        }
+        if(purchaseDate == null){
+            error += "\n\nPurchase Date field is blank, please select a type.";
+        }
+        
+        Calendar currentDate = dates.currentDateFinder();
+        Calendar purchaseDateCalendar = dates.convertDateToCalendar(purchaseDate);
+        if(currentDate.before(purchaseDateCalendar)){
+            error += "\n\nThe purchase date selected is in the future, please select current date or before.";
+        }
+        
+        if(error.length() == 0){
+            return true;
+        }
+        else{
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Warning Dialog");
+            alert.setContentText(error);
+            alert.showAndWait();
+            return false;
+        }
+    }
+    
+    /**
      * Makes it easier to switches between screens and not have all this repeated each time the screen is changed.
      * @param location FXML file name to switch too.
      * @param actionEvent Stores the action event.
@@ -297,20 +363,6 @@ public class ItemController implements Initializable {
         stage.setScene(new Scene(scene));
         stage.show();
     }
-    
-    AlertWarning warning = (title, message) -> {
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle(title);
-        alert.setContentText(message);
-        alert.showAndWait();
-    };
-    
-    AlertError error = (dialog, message) -> {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle(dialog);
-        alert.setContentText(message);
-        alert.showAndWait();
-    };
     
     AlertInfo infoAlert = (dialog, message) -> {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);

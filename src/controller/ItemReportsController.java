@@ -31,12 +31,16 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.stage.Stage;
 import model.Item;
+import utilities.AlertInfo;
+import utilities.Dates;
 
 /**
  * FXML Controller class
@@ -44,6 +48,8 @@ import model.Item;
  * @author Craig Lohrman
  */
 public class ItemReportsController implements Initializable {
+    Dates dates = new Dates();
+    ObservableList<String> yearList = FXCollections.observableArrayList();
 
     @FXML
     private TableView<Item> tableDisplay;
@@ -59,6 +65,8 @@ public class ItemReportsController implements Initializable {
     private TableColumn<Item, String> tblColName;
     @FXML
     private TableColumn<Item, String> tblColReason;
+    @FXML
+    private ComboBox<String> comboYear;
     @FXML
     private Label showTotalCost;
     
@@ -85,9 +93,9 @@ public class ItemReportsController implements Initializable {
         tblColReason.setCellValueFactory(cellData -> {
             return new ReadOnlyStringWrapper(cellData.getValue().getReason());
         });
-        
+        fillComboYeare();
         try {
-            tableDisplay.setItems(ItemQueries.getAllItems());
+            tableDisplayloader();
         } catch (SQLException ex) {
             Logger.getLogger(ItemReportsController.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -100,19 +108,11 @@ public class ItemReportsController implements Initializable {
      */
     @FXML
     public void onActionAll(ActionEvent event) throws SQLException {
-        double cost = 0.00;
-        for(Item item : ItemQueries.getAllItems()){
-            cost += item.getCost();
-        }
-        tableDisplay.setItems(ItemQueries.getAllItems());
-        DecimalFormat decimalFormat = new DecimalFormat("#,###.##");
-        decimalFormat.setRoundingMode(RoundingMode.HALF_UP);
-        String formatedCost = decimalFormat.format(cost);
-        showTotalCost.setText(formatedCost);
+        tableDisplayloader();
     }
     
     /**
-     * 
+     * Filters out all the items that are 30 days old to current, and displays them.
      * @param event
      * @throws ParseException
      * @throws SQLException 
@@ -122,8 +122,8 @@ public class ItemReportsController implements Initializable {
         double cost = 0.00;
         
         ObservableList<Item> filteredItems = FXCollections.observableArrayList();
-        Calendar currentDate = currentDateFinder();
-        Calendar minus30Days = minus30DaysDateFinder();
+        Calendar currentDate = dates.currentDateFinder();
+        Calendar minus30Days = dates.minus30DaysDateFinder();
         
         for(Item item : ItemQueries.getAllItems()){
             String purchaseDate = item.getDateOfPurchase();
@@ -143,13 +143,19 @@ public class ItemReportsController implements Initializable {
         }
     }
 
+    /**
+     * Filters out all the items that are 90 days old to current, and displays them.
+     * @param event
+     * @throws ParseException
+     * @throws SQLException 
+     */
     @FXML
     public void onAction90Days(ActionEvent event) throws ParseException, SQLException {
         double cost = 0.00;
         
         ObservableList<Item> filteredItems = FXCollections.observableArrayList();
-        Calendar currentDate = currentDateFinder();
-        Calendar minus90Days = minus90DaysDateFinder();
+        Calendar currentDate = dates.currentDateFinder();
+        Calendar minus90Days = dates.minus90DaysDateFinder();
                 
         for(Item item : ItemQueries.getAllItems()){
             String purchaseDate = item.getDateOfPurchase();
@@ -169,19 +175,33 @@ public class ItemReportsController implements Initializable {
         }
     }
 
-    @FXML //3, 4, 5
+    /**
+     * Filters out all the items that are in the Spring months of March, April and May of the selected current or last year, and displays them.
+     * @param event
+     * @throws ParseException
+     * @throws SQLException 
+     */
+    @FXML 
     public void onActionSpring(ActionEvent event) throws ParseException, SQLException {
         
         double cost = 0.00;
+        int selectedYear = 2000;
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd-yyyy");
         ObservableList<Item> filteredItems = FXCollections.observableArrayList();
+        
+        try{
+            selectedYear = selectYear();
+        }catch(NullPointerException e){
+            infoAlert.alertInfomation("Information Dialog", "Please select which year you want.");
+        }
         
         for(Item item : ItemQueries.getAllItems()){
             String serviceDate = item.getDateOfPurchase();
             LocalDate getDate = LocalDate.parse(serviceDate, formatter);
             int monthNumber = getDate.getMonthValue();
-            
-            if(monthNumber == 3 || monthNumber == 4 || monthNumber == 5){
+            int yearNumber = getDate.getYear();
+
+            if((monthNumber == 3 || monthNumber == 4 || monthNumber == 5) && selectedYear == yearNumber){
                 filteredItems.add(item);
                 cost += item.getCost();
             }
@@ -193,19 +213,33 @@ public class ItemReportsController implements Initializable {
         }
     }
 
-    @FXML //6, 7, 8
+    /**
+     * Filters out all the items that are of the summer months June, July, August of the selected current or last year, and displays them.
+     * @param event
+     * @throws ParseException
+     * @throws SQLException 
+     */
+    @FXML
     public void onActionSummer(ActionEvent event) throws ParseException, SQLException {
         
         double cost = 0.00;
+        int selectedYear = 2000;
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd-yyyy");
         ObservableList<Item> filteredItems = FXCollections.observableArrayList();
+        
+        try{
+            selectedYear = selectYear();
+        }catch(NullPointerException e){
+            infoAlert.alertInfomation("Information Dialog", "Please select which year you want.");
+        }
         
         for(Item item : ItemQueries.getAllItems()){
             String serviceDate = item.getDateOfPurchase();
             LocalDate getDate = LocalDate.parse(serviceDate, formatter);
             int monthNumber = getDate.getMonthValue();
+            int yearNumber = getDate.getYear();
             
-            if(monthNumber == 6 || monthNumber == 7 || monthNumber == 8){
+            if((monthNumber == 6 || monthNumber == 7 || monthNumber == 8) && selectedYear == yearNumber){
                 filteredItems.add(item);
                 cost += item.getCost();
             }
@@ -218,22 +252,37 @@ public class ItemReportsController implements Initializable {
         }
     }
     
-    @FXML //9, 10, 11
+    /**
+     * Filters out all the items that are of the fall months September, October, November of the selected current or last year, and displays them.
+     * @param event
+     * @throws ParseException
+     * @throws SQLException 
+     */
+    @FXML
     public void onActionFall(ActionEvent event) throws ParseException, SQLException {
         
         double cost = 0.00;
+        int selectedYear = 2000;
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd-yyyy");
         ObservableList<Item> filteredItems = FXCollections.observableArrayList();
+        
+        try{
+            selectedYear = selectYear();
+        }catch(NullPointerException e){
+            infoAlert.alertInfomation("Information Dialog", "Please select which year you want.");
+        }
         
         for(Item item : ItemQueries.getAllItems()){
             String serviceDate = item.getDateOfPurchase();
             LocalDate getDate = LocalDate.parse(serviceDate, formatter);
             int monthNumber = getDate.getMonthValue();
+            int yearNumber = getDate.getYear();
             
-            if(monthNumber == 9 || monthNumber == 10 || monthNumber == 11){
+            if((monthNumber == 9 || monthNumber == 10 || monthNumber == 11) && selectedYear == yearNumber){
                 filteredItems.add(item);
                 cost += item.getCost();
             }
+            
             tableDisplay.setItems(filteredItems);
             DecimalFormat decimalFormat = new DecimalFormat("#,###.##");
             decimalFormat.setRoundingMode(RoundingMode.HALF_UP);
@@ -242,23 +291,46 @@ public class ItemReportsController implements Initializable {
         }
     }
 
-    @FXML //12, 1, 2
+    /**
+     * Filters out all the items that are of the fall months December, January, February of the selected current or last year, and displays them.
+     * @param event
+     * @throws ParseException
+     * @throws SQLException 
+     */
+    @FXML
     public void onActionWinter(ActionEvent event) throws ParseException, SQLException {
         
         double cost = 0.00;
+        int selectedYear = 0;
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd-yyyy");
-        ObservableList<Item> filteredVisits = FXCollections.observableArrayList();
+        ObservableList<Item> filteredItems = FXCollections.observableArrayList();
+        
+        try{
+            selectedYear = selectYear();
+        }catch(NullPointerException e){
+            infoAlert.alertInfomation("Information Dialog", "Please select which year you want.");
+        }
         
         for(Item item : ItemQueries.getAllItems()){
             String serviceDate = item.getDateOfPurchase();
             LocalDate getDate = LocalDate.parse(serviceDate, formatter);
             int monthNumber = getDate.getMonthValue();
+            int yearNumber = getDate.getYear();
             
-            if(monthNumber == 12 || monthNumber == 1 || monthNumber == 2){
-                filteredVisits.add(item);
-                cost += item.getCost();
+            if(monthNumber == 12){
+                if(selectedYear - 1 == yearNumber){
+                    filteredItems.add(item);
+                    cost += item.getCost();
+                }
             }
-            tableDisplay.setItems(filteredVisits);
+            else if(monthNumber == 1 || monthNumber == 2){
+                if(selectedYear == yearNumber){
+                    filteredItems.add(item);
+                    cost += item.getCost();
+                }
+            }
+            
+            tableDisplay.setItems(filteredItems);
             DecimalFormat decimalFormat = new DecimalFormat("#,###.##");
             decimalFormat.setRoundingMode(RoundingMode.HALF_UP);
             String formatedCost = decimalFormat.format(cost);
@@ -266,53 +338,67 @@ public class ItemReportsController implements Initializable {
         }
     }
     
+    /**
+     * Switches to the Home screen menu. 
+     * @param event
+     * @throws IOException 
+     */
     @FXML
     public void onActionHome(ActionEvent event) throws IOException {
         switchScreens("/view/Home.fxml", event);
     }
 
+    /**
+     * Switches to the Reports Menu screen menu. 
+     * @param event
+     * @throws IOException 
+     */
     @FXML
     public void onActionReportsMenu(ActionEvent event) throws IOException {
         switchScreens("/view/reportsMenu.fxml", event);
     }
     
-    public Calendar currentDateFinder() throws ParseException{
-        DateTimeFormatter formatDate = DateTimeFormatter.ofPattern("MM-dd-yyyy");
-        
-        LocalDateTime currentDateLDT = LocalDateTime.now();
-        String currentDate = currentDateLDT.format(formatDate);
-        
-        Date newDate = new SimpleDateFormat("MM-dd-yyyy", Locale.ENGLISH).parse(currentDate);
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(newDate);
-        
-        return calendar;
+    /**
+     * Get the information from the database and the table view.
+     * @throws SQLException 
+     */
+    public void tableDisplayloader() throws SQLException {
+        double cost = 0.00;
+        for(Item item : ItemQueries.getAllItems()){
+            cost += item.getCost();
+        }
+        tableDisplay.setItems(ItemQueries.getAllItems());
+        DecimalFormat decimalFormat = new DecimalFormat("#,###.##");
+        decimalFormat.setRoundingMode(RoundingMode.HALF_UP);
+        String formatedCost = decimalFormat.format(cost);
+        showTotalCost.setText(formatedCost);
     }
     
-    public Calendar minus30DaysDateFinder() throws ParseException{
-        DateTimeFormatter formatDate = DateTimeFormatter.ofPattern("MM-dd-yyyy");
-        
-        LocalDateTime currentDateLDT = LocalDateTime.now();
-        String currentDate = currentDateLDT.format(formatDate);
-        
-        Date newDate = new SimpleDateFormat("MM-dd-yyyy", Locale.ENGLISH).parse(currentDate);
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(newDate);
-        calendar.add(Calendar.DAY_OF_MONTH, -30);
-        return calendar;
+    /**
+     * Fills the array list with the list of years, then loads the combo box with the list.
+     */
+    public void fillComboYeare(){
+        yearList.addAll("Current Year", "Last Year");
+        comboYear.setItems(yearList);
     }
     
-    public Calendar minus90DaysDateFinder() throws ParseException{
-        DateTimeFormatter formatDate = DateTimeFormatter.ofPattern("MM-dd-yyyy");
+    /**
+     * Gets the selected year, and returns that years number.
+     * @return The year as an int.
+     * @throws ParseException 
+     */
+    public int selectYear() throws ParseException{
+        int selectedYear = 2000;
         
-        LocalDateTime currentDateLDT = LocalDateTime.now();
-        String currentDate = currentDateLDT.format(formatDate);
-        
-        Date newDate = new SimpleDateFormat("MM-dd-yyyy", Locale.ENGLISH).parse(currentDate);
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(newDate);
-        calendar.add(Calendar.DAY_OF_MONTH, -90);
-        return calendar;
+        if(comboYear.getValue().equalsIgnoreCase("Current Year")){
+            Calendar year = dates.currentDateFinder();
+            selectedYear = year.get(Calendar.YEAR);
+        }
+        else if(comboYear.getValue().equalsIgnoreCase("Last Year")){
+            Calendar year = dates.currentDateFinder();
+            selectedYear = year.get(Calendar.YEAR) - 1;
+        }
+        return selectedYear;
     }
     
     /**
@@ -331,4 +417,11 @@ public class ItemReportsController implements Initializable {
         stage.setScene(new Scene(scene));
         stage.show();
     }
+     
+    AlertInfo infoAlert = (dialog, message) -> {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(dialog);
+        alert.setContentText(message);
+        alert.showAndWait();
+    };
 }

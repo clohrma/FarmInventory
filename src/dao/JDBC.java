@@ -20,8 +20,8 @@ public abstract class JDBC {
     private static final String databaseName = "farm_inventory";
     private static final String jdbcUrl = protocol + vendor + location + databaseName + "?connectionTimeZone = SERVER";
     private static final String driver = "com.mysql.cj.jdbc.Driver"; 
-    private static final String userName = "root";
-    private static final String password = "Clohrman3800";
+    private static final String userName = "sqlUser";
+    private static final String password = "Passw0rd!";
     
     /**
      * This is used with getConnection, this is the connection return.

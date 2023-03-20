@@ -28,31 +28,63 @@ public class ReportsMenuController implements Initializable {
         
     }
     
+    /**
+     * Switches to the Visit Report screen menu.
+     * @param event
+     * @throws IOException 
+     */
     @FXML
-    void onActionVisitReport(ActionEvent event) throws IOException {
+    public void onActionVisitReport(ActionEvent event) throws IOException {
         switchScreens("/view/visitReports.fxml", event);
     }
     
+    /**
+     * Switches to the Animal Report screen menu.
+     * @param event
+     * @throws IOException 
+     */
     @FXML
-    void onActionAnimalReport(ActionEvent event) throws IOException {
+    public void onActionAnimalReport(ActionEvent event) throws IOException {
         switchScreens("/view/animalReports.fxml", event);
     }
     
+    /**
+     * Switches to the Item Report screen menu.
+     * @param event
+     * @throws IOException 
+     */
     @FXML
-    void onActionItemReport(ActionEvent event) throws IOException {
+    public void onActionItemReport(ActionEvent event) throws IOException {
         switchScreens("/view/itemReports.fxml", event);
     }
     
+    /**
+     * Switches to the Medication Report screen menu.
+     * @param event
+     * @throws IOException 
+     */
      @FXML
-    void onActionMedicationReport(ActionEvent event) throws IOException {
+    public void onActionMedicationReport(ActionEvent event) throws IOException {
         switchScreens("/view/medicationReport.fxml", event);
     }
     
+    
+    /**
+     * Switches to the Home screen menu. 
+     * @param event
+     * @throws IOException 
+     */
     @FXML
-    void onActionHome(ActionEvent event) throws IOException {
+    public void onActionHome(ActionEvent event) throws IOException {
         switchScreens("/view/home.fxml", event);
     }
 
+    /**
+     * Makes it easier to switches between screens and not have all this repeated each time the screen is changed.
+     * @param location FXML file name to switch too.
+     * @param actionEvent Stores the action event.
+     * @throws IOException  Throws IO Exception.
+     */
     public void switchScreens(String location, ActionEvent actionEvent) throws IOException {
         
         FXMLLoader loader = new FXMLLoader();

@@ -2,6 +2,7 @@
 
 <?import java.net.URL?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
@@ -25,11 +26,12 @@
             <TableColumn fx:id="tblColReason" minWidth="5.0" prefWidth="150.0" text="Reason" />
          </columns>
       </TableView>
-      <VBox layoutX="5.0" layoutY="55.0" prefHeight="400.0" prefWidth="155.0" spacing="25.0">
+      <VBox layoutX="5.0" layoutY="55.0" prefHeight="435.0" prefWidth="155.0" spacing="20.0">
          <children>
             <Button mnemonicParsing="false" onAction="#onActionAll" prefHeight="30.0" prefWidth="150.0" styleClass="allBtn" text="All" />
             <Button mnemonicParsing="false" onAction="#onAction30Days" prefHeight="30.0" prefWidth="150.0" styleClass="days30Btn" text="30 Days" />
             <Button mnemonicParsing="false" onAction="#onAction90Days" prefHeight="30.0" prefWidth="150.0" styleClass="days90Btn" text="90 Days" />
+            <ComboBox fx:id="comboYear" prefHeight="50.0" prefWidth="150.0" promptText="Which Year" styleClass="comboYear" />
             <Button mnemonicParsing="false" onAction="#onActionSpring" prefHeight="30.0" prefWidth="150.0" styleClass="springBtn" text="Spring" />
             <Button alignment="CENTER" mnemonicParsing="false" onAction="#onActionSummer" prefHeight="30.0" prefWidth="150.0" styleClass="summerBtn" text="Summer" />
             <Button mnemonicParsing="false" onAction="#onActionFall" prefHeight="30.0" prefWidth="150.0" styleClass="fallBtn" text="Fall" />

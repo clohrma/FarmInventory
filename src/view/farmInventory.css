@@ -30,6 +30,11 @@
         -fx-font-weight:  bold;
     }
     
+    .comboYear{
+        -fx-font-weight:  bold;
+        -fx-font-size: 12pt;
+    }
+        
     .allBtn{
         -fx-font-size: 12pt;
     }

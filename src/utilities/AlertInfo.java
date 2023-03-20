@@ -4,6 +4,8 @@
  */
 package utilities;
 
+import javafx.scene.control.Button;
+
 /**
  *
  * @author Craig Lohrman

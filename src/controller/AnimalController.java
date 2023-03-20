@@ -12,8 +12,10 @@ import java.net.URL;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Calendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.Optional;
@@ -40,9 +42,8 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import model.Animal;
 import utilities.AlertConfirm;
-import utilities.AlertError;
 import utilities.AlertInfo;
-import utilities.AlertWarning;
+import utilities.Dates;
 
 
 /**
@@ -55,6 +56,7 @@ public class AnimalController implements Initializable {
     ObservableList<String> type = FXCollections.observableArrayList();
     ObservableList<String> gender = FXCollections.observableArrayList();
     int animalID = -1;
+    Dates dates = new Dates();
     
     @FXML
     private ComboBox<String> comboType;
@@ -110,38 +112,39 @@ public class AnimalController implements Initializable {
      * @throws SQLException  Throws SQL Exception.
      */
     @FXML
-    public void onActionAdd(ActionEvent event) throws SQLException {
+    public void onActionAdd(ActionEvent event) throws SQLException, ParseException {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd-yyyy");
         int currentID = animalID;
         String altered = "No";
         if(rbnAlteredYes.isSelected()){
                 altered = "Yes";
         }
-                
-        if(currentID == -1){
-            String name = txtName.getText();
-            String gender = comboGender.getValue();
-            String color = txtColor.getText();
-            LocalDate getDate = dateBirthdate.getValue();
-            String dateOfBirth = getDate.format(formatter);
-            String breed = txtBreed.getText();
-            String type = comboType.getValue();
-            
-            AnimalQueries.insert(name, dateOfBirth, gender, altered, breed, color, type);
+        if(fieldCheck()){
+            if(currentID == -1){
+                String name = txtName.getText();
+                String gender = comboGender.getValue();
+                String color = txtColor.getText();
+                LocalDate getDate = dateBirthdate.getValue();
+                String dateOfBirth = getDate.format(formatter);
+                String breed = txtBreed.getText();
+                String type = comboType.getValue();
+
+                AnimalQueries.insert(name, dateOfBirth, gender, altered, breed, color, type);
+            }
+            else{
+                String name = txtName.getText();
+                String gender = comboGender.getValue();
+                String color = txtColor.getText();
+                LocalDate getDate = dateBirthdate.getValue();
+                String dateOfBirth = getDate.format(formatter);
+                String breed = txtBreed.getText();
+                String type = comboType.getValue();
+
+                AnimalQueries.update(currentID, name, dateOfBirth, gender, altered, breed, color, type);
+            }
+            clearFields();
+            refreshAnimalTable();
         }
-        else{
-            String name = txtName.getText();
-            String gender = comboGender.getValue();
-            String color = txtColor.getText();
-            LocalDate getDate = dateBirthdate.getValue();
-            String dateOfBirth = getDate.format(formatter);
-            String breed = txtBreed.getText();
-            String type = comboType.getValue();
-            
-            AnimalQueries.update(currentID, name, dateOfBirth, gender, altered, breed, color, type);
-        }
-        clearFields();
-        refreshAnimalTable();
     }
 
     /**
@@ -156,9 +159,14 @@ public class AnimalController implements Initializable {
         
         String name = txtName.getText();
         
-        if(confirm.alertConfirm("Delete Confirmation", "Are you sure you what to delete, " + name + " from the Animal's table?")){
-            AnimalQueries.delete(animalID);
-            infoAlert.alertInfomation("Information Dialog", "" + name + " has been deleted from the Animal's table.");
+        if(animalID != -1){
+            if(confirm.alertConfirm("Delete Confirmation", "Are you sure you what to delete, " + name + " from the Animal's table?")){
+                AnimalQueries.delete(animalID);
+                infoAlert.alertInfomation("Information Dialog", "" + name + " has been deleted from the Animal's table.");
+            }
+        }
+        else{
+            infoAlert.alertInfomation("Select an Animal to Delete", "Please select an Animal to delete.");
         }
         clearFields();
         refreshAnimalTable();
@@ -238,7 +246,7 @@ public class AnimalController implements Initializable {
     }
     
     /**
-     * 
+     * Get the information from the database for the selected animal and loads the text fields and combo boxes.
      * @param sentAnimalID The ID for the selected animal.
      * @throws SQLException 
      * @throws Exception 
@@ -291,8 +299,60 @@ public class AnimalController implements Initializable {
      * Updates the TableView to the newest data.
      * @throws SQLException 
      */
-    private void refreshAnimalTable() throws SQLException{
+    public void refreshAnimalTable() throws SQLException{
         tblvwDisplay.setItems(AnimalQueries.getAllAnimals());
+    }
+    
+    /**
+     * Checks all the fields for information and displays an error message if there are.
+     * @return True if there are no errors, and False if there are errors.
+     * @throws ParseException 
+     */
+    public boolean fieldCheck() throws ParseException{
+        
+        String type = comboType.getValue();
+        String breed = txtBreed.getText();
+        String color = txtColor.getText();
+        String name = txtName.getText();
+        String gender = comboGender.getValue();
+        LocalDate dateOfBirth = dateBirthdate.getValue();
+        String error = "";
+        
+        if(type == null || type.length() == 0){
+            error += "\n\nType field is blank, please select a type.";
+        }
+        
+        if(breed == null || breed.length() == 0){
+            error += "\n\nBreed field is blank, please select a type.";
+        }
+        if(color == null || color.length() == 0){
+            error += "\n\nColor field is blank, please select a type.";
+        }
+        if(name == null || name.length() == 0){
+            error += "\n\nName field is blank, please select a type.";
+        }
+        if(gender == null || gender.length() == 0){
+            error += "\n\nGender field is blank, please select a type.";
+        }
+        if(dateOfBirth == null){
+            error += "\n\nBirthdate field is blank, please select a type.";
+        }
+        
+        Calendar currentDate = dates.currentDateFinder();
+        if(currentDate.before(dateOfBirth)){
+            error += "\n\nThe date selected is in the future, please select another date.";
+        }
+        
+        if(error.length() == 0){
+            return true;
+        }
+        else{
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Warning Dialog");
+            alert.setContentText(error);
+            alert.showAndWait();
+            return false;
+        }
     }
     
     /**
@@ -311,20 +371,6 @@ public class AnimalController implements Initializable {
         stage.setScene(new Scene(scene));
         stage.show();
     }
-    
-    AlertWarning warning = (title, message) -> {
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle(title);
-        alert.setContentText(message);
-        alert.showAndWait();
-    };
-    
-    AlertError error = (dialog, message) -> {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle(dialog);
-        alert.setContentText(message);
-        alert.showAndWait();
-    };
     
     AlertInfo infoAlert = (dialog, message) -> {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
