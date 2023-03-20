@@ -31,6 +31,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -38,6 +39,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.stage.Stage;
 import model.Visit;
+import utilities.AlertInfo;
 
 /**
  * FXML Controller class
@@ -46,6 +48,7 @@ import model.Visit;
  */
 public class VisitReportsController implements Initializable {
     
+    ObservableList<String> yearList = FXCollections.observableArrayList();
 
     @FXML
     private ComboBox<String> comboVisitList;
@@ -63,6 +66,8 @@ public class VisitReportsController implements Initializable {
     private TableColumn<Visit, String> tblColName;
     @FXML
     private TableColumn<Visit, String> tblColReason;
+    @FXML
+    private ComboBox<String> comboYear;
     @FXML
     private Label showTotalCost;
 
@@ -90,28 +95,32 @@ public class VisitReportsController implements Initializable {
         tblColReason.setCellValueFactory(cellData -> {
             return new ReadOnlyStringWrapper(cellData.getValue().getReason());
         });
+        fillComboYeare();
         try {
-            tableDisplay.setItems(VisitQueries.getAllVisits());
+            tableDisplayloader();
         } catch (SQLException ex) {
             Logger.getLogger(VisitReportsController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
+    /**
+     * Displays all the visits in the database, and shows the total of each item added up.
+     * @param event
+     * @throws SQLException 
+     */
     @FXML
-    void onActionAll(ActionEvent event) throws SQLException {
-        double cost = 0.00;
-        for(Visit v : VisitQueries.getAllVisits()){
-            cost += v.getCost();
-        }
-        tableDisplay.setItems(VisitQueries.getAllVisits());
-         DecimalFormat df = new DecimalFormat("#,###.##");
-         df.setRoundingMode(RoundingMode.HALF_UP);
-         String rounded = df.format(cost);
-         showTotalCost.setText(rounded);
+    public void onActionAll(ActionEvent event) throws SQLException {
+        tableDisplayloader();
     }
     
+    /**
+     * Filters out all the visits that are 30 days old to current, and displays them.
+     * @param event
+     * @throws ParseException
+     * @throws SQLException 
+     */
     @FXML
-    void onAction30Days(ActionEvent event) throws ParseException, SQLException {
+    public void onAction30Days(ActionEvent event) throws ParseException, SQLException {
         
         double cost = 0.00;
         
@@ -137,8 +146,14 @@ public class VisitReportsController implements Initializable {
         }
     }
 
+    /**
+     * Filters out all the visits that are 90 days old to current, and displays them.
+     * @param event
+     * @throws ParseException
+     * @throws SQLException 
+     */
     @FXML
-    void onAction90Days(ActionEvent event) throws ParseException, SQLException {
+    public void onAction90Days(ActionEvent event) throws ParseException, SQLException {
         
         double cost = 0.00;
         
@@ -164,112 +179,213 @@ public class VisitReportsController implements Initializable {
         }
     }
 
-    @FXML //3, 4, 5
-    void onActionSpring(ActionEvent event) throws ParseException, SQLException {
+    /**
+     * Filters out all the visits that are in the Spring months of March, April and May of the selected current or last year and displays them.
+     * @param event
+     * @throws ParseException
+     * @throws SQLException 
+     */
+    @FXML //March, April and May
+    public void onActionSpring(ActionEvent event) throws ParseException, SQLException {
         
         double cost = 0.00;
+        int selectedYear = 0;
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd-yyyy");
-        ObservableList<Visit> allVisits = VisitQueries.getAllVisits();
-        ObservableList<Visit> filteredVisits = FXCollections.observableArrayList();
+        ObservableList<Visit> filteredItems = FXCollections.observableArrayList();
+        Calendar currentDate = currentDateFinder();
         
-        for(Visit v : allVisits){
-            String serviceDate = v.getDateOfService();
+        try{
+            selectedYear = selectYear();
+        }catch(NullPointerException e){
+            infoAlert.alertInfomation("Information Dialog", "Please select which year you want.");
+        }
+        
+        for(Visit visit : VisitQueries.getAllVisits()){
+            String serviceDate = visit.getDateOfService();
             LocalDate getDate = LocalDate.parse(serviceDate, formatter);
             int monthNumber = getDate.getMonthValue();
-            
-            if(monthNumber == 3 || monthNumber == 4 || monthNumber == 5){
-                filteredVisits.add(v);
-                cost += v.getCost();
+            int yearNumber = getDate.getYear();
+
+            if((monthNumber == 3 || monthNumber == 4 || monthNumber == 5) && selectedYear == yearNumber){
+                filteredItems.add(visit);
+                cost += visit.getCost();
             }
-            tableDisplay.setItems(filteredVisits);
-            DecimalFormat df = new DecimalFormat("#,###.##");
-            df.setRoundingMode(RoundingMode.HALF_UP);
-            String rounded = df.format(cost);
-            showTotalCost.setText(rounded);
+            tableDisplay.setItems(filteredItems);
+            DecimalFormat decimalFormat = new DecimalFormat("#,###.##");
+            decimalFormat.setRoundingMode(RoundingMode.HALF_UP);
+            String formatedCost = decimalFormat.format(cost);
+            showTotalCost.setText(formatedCost);
         }
     }
 
-    @FXML //6, 7, 8
-    void onActionSummer(ActionEvent event) throws ParseException, SQLException {
+    /**
+     * Filters out all the visits that are in the Spring months of June, July, August of the selected current or last year and displays them.
+     * @param event
+     * @throws ParseException
+     * @throws SQLException 
+     */
+    @FXML
+    public void onActionSummer(ActionEvent event) throws ParseException, SQLException {
         
         double cost = 0.00;
+        int selectedYear = 0;
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd-yyyy");
-        ObservableList<Visit> allVisits = VisitQueries.getAllVisits();
-        ObservableList<Visit> filteredVisits = FXCollections.observableArrayList();
+        ObservableList<Visit> filteredItems = FXCollections.observableArrayList();
+        Calendar currentDate = currentDateFinder();
         
-        for(Visit v : allVisits){
-            String serviceDate = v.getDateOfService();
+        try{
+            selectedYear = selectYear();
+        }catch(NullPointerException e){
+            infoAlert.alertInfomation("Information Dialog", "Please select which year you want.");
+        }
+        
+        for(Visit visit : VisitQueries.getAllVisits()){
+            String serviceDate = visit.getDateOfService();
             LocalDate getDate = LocalDate.parse(serviceDate, formatter);
             int monthNumber = getDate.getMonthValue();
-            
-            if(monthNumber == 6 || monthNumber == 7 || monthNumber == 8){
-                filteredVisits.add(v);
-                cost += v.getCost();
+            int yearNumber = getDate.getYear();
+
+            if((monthNumber == 6 || monthNumber == 7 || monthNumber == 8) && selectedYear == yearNumber){
+                filteredItems.add(visit);
+                cost += visit.getCost();
             }
-         
-            tableDisplay.setItems(filteredVisits);
-            DecimalFormat df = new DecimalFormat("#,###.##");
-            df.setRoundingMode(RoundingMode.HALF_UP);
-            String rounded = df.format(cost);
-            showTotalCost.setText(rounded);
+            tableDisplay.setItems(filteredItems);
+            DecimalFormat decimalFormat = new DecimalFormat("#,###.##");
+            decimalFormat.setRoundingMode(RoundingMode.HALF_UP);
+            String formatedCost = decimalFormat.format(cost);
+            showTotalCost.setText(formatedCost);
         }
     }
     
-    @FXML //9, 10, 11
-    void onActionFall(ActionEvent event) throws ParseException, SQLException {
+    /**
+     * Filters out all the visits that are in the Spring months of September, October, November of the selected current or last year and displays them.
+     * @param event
+     * @throws ParseException
+     * @throws SQLException 
+     */
+    @FXML
+    public void onActionFall(ActionEvent event) throws ParseException, SQLException {
         
         double cost = 0.00;
+        int selectedYear = 0;
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd-yyyy");
-        ObservableList<Visit> allVisits = VisitQueries.getAllVisits();
-        ObservableList<Visit> filteredVisits = FXCollections.observableArrayList();
+        ObservableList<Visit> filteredItems = FXCollections.observableArrayList();
         
-        for(Visit v : allVisits){
-            String serviceDate = v.getDateOfService();
+        try{
+            selectedYear = selectYear();
+        }catch(NullPointerException e){
+            infoAlert.alertInfomation("Information Dialog", "Please select which year you want.");
+        }
+        
+        for(Visit visit : VisitQueries.getAllVisits()){
+            String serviceDate = visit.getDateOfService();
             LocalDate getDate = LocalDate.parse(serviceDate, formatter);
             int monthNumber = getDate.getMonthValue();
-            
-            if(monthNumber == 9 || monthNumber == 10 || monthNumber == 11){
-                filteredVisits.add(v);
-                cost += v.getCost();
+            int yearNumber = getDate.getYear();
+
+            if((monthNumber == 9 || monthNumber == 10 || monthNumber == 11) && selectedYear == yearNumber){
+                filteredItems.add(visit);
+                cost += visit.getCost();
             }
-            tableDisplay.setItems(filteredVisits);
-            DecimalFormat df = new DecimalFormat("#,###.##");
-            df.setRoundingMode(RoundingMode.HALF_UP);
-            String rounded = df.format(cost);
-            showTotalCost.setText(rounded);
+            
+            tableDisplay.setItems(filteredItems);
+            DecimalFormat decimalFormat = new DecimalFormat("#,###.##");
+            decimalFormat.setRoundingMode(RoundingMode.HALF_UP);
+            String formatedCost = decimalFormat.format(cost);
+            showTotalCost.setText(formatedCost);
         }
     }
 
-    @FXML //12, 1, 2
-    void onActionWinter(ActionEvent event) throws ParseException, SQLException {
+    /**
+     * Filters out all the visits that are in the Spring months of December, January, February of the selected current or last year and displays them.
+     * @param event
+     * @throws ParseException
+     * @throws SQLException 
+     */
+    @FXML
+    public void onActionWinter(ActionEvent event) throws ParseException, SQLException {
         
         double cost = 0.00;
+        int selectedYear = 0;
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd-yyyy");
-        ObservableList<Visit> allVisits = VisitQueries.getAllVisits();
-        ObservableList<Visit> filteredVisits = FXCollections.observableArrayList();
+        ObservableList<Visit> filteredItems = FXCollections.observableArrayList();
         
-        for(Visit v : allVisits){
-            String serviceDate = v.getDateOfService();
+        try{
+            selectedYear = selectYear();
+        }catch(NullPointerException e){
+            infoAlert.alertInfomation("Information Dialog", "Please select which year you want.");
+        }
+        
+        for(Visit visit : VisitQueries.getAllVisits()){
+            String serviceDate = visit.getDateOfService();
             LocalDate getDate = LocalDate.parse(serviceDate, formatter);
             int monthNumber = getDate.getMonthValue();
-            
-            if(monthNumber == 12 || monthNumber == 1 || monthNumber == 2){
-                filteredVisits.add(v);
-                cost += v.getCost();
+            int yearNumber = getDate.getYear();
+
+            if(monthNumber == 12){
+                if(selectedYear == yearNumber){
+                    filteredItems.add(visit);
+                    cost += visit.getCost();
+                }
+             }
+            if(monthNumber == 1 || monthNumber == 2) {
+                if(selectedYear == yearNumber){
+                    filteredItems.add(visit);
+                    cost += visit.getCost();
+                }
             }
-            tableDisplay.setItems(filteredVisits);
-            DecimalFormat df = new DecimalFormat("#,###.##");
-            df.setRoundingMode(RoundingMode.HALF_UP);
-            String rounded = df.format(cost);
-            showTotalCost.setText(rounded);
+            tableDisplay.setItems(filteredItems);
+            DecimalFormat decimalFormat = new DecimalFormat("#,###.##");
+            decimalFormat.setRoundingMode(RoundingMode.HALF_UP);
+            String formatedCost = decimalFormat.format(cost);
+            showTotalCost.setText(formatedCost);
         }
     }
     
-    private double findTotalCost(){
-        double totalCost = 0.00;
-        
-        return totalCost;
+    /**
+     * Switches to the Home screen menu. 
+     * @param event
+     * @throws IOException 
+     */
+    @FXML
+    public void onActionHome(ActionEvent event) throws IOException {
+        switchScreens("/view/Home.fxml", event);
     }
+
+    
+    /**
+     * Switches to the Reports Menu screen menu. 
+     * @param event
+     * @throws IOException 
+     */
+    @FXML
+    public void onActionReportsMenu(ActionEvent event) throws IOException {
+        switchScreens("/view/reportsMenu.fxml", event);
+    }
+    
+    
+    /**
+     * Get the information from the database and the table view.
+     * @throws SQLException 
+     */
+    public void tableDisplayloader() throws SQLException {
+        double cost = 0.00;
+        for(Visit v : VisitQueries.getAllVisits()){
+            cost += v.getCost();
+        }
+        tableDisplay.setItems(VisitQueries.getAllVisits());
+         DecimalFormat df = new DecimalFormat("#,###.##");
+         df.setRoundingMode(RoundingMode.HALF_UP);
+         String rounded = df.format(cost);
+         showTotalCost.setText(rounded);
+    }
+    
+    
+    /**
+     * Gets the current date, formats it to the layout needed, then returns it as a Calendar.
+     * @return The current date as a Calendar type.
+     * @throws ParseException 
+     */
     public Calendar currentDateFinder() throws ParseException{
         DateTimeFormatter formatDate = DateTimeFormatter.ofPattern("MM-dd-yyyy");
         
@@ -283,6 +399,11 @@ public class VisitReportsController implements Initializable {
         return calendar;
     }
     
+    /**
+     * Gets the current date, formats it to the layout needed, subtracts 30 days, then returns it as a Calendar.
+     * @return The current date as a Calendar type.
+     * @throws ParseException 
+     */
     public Calendar minus30DaysDateFinder() throws ParseException{
         DateTimeFormatter formatDate = DateTimeFormatter.ofPattern("MM-dd-yyyy");
         
@@ -297,6 +418,11 @@ public class VisitReportsController implements Initializable {
         return calendar;
     }
     
+    /**
+     * Gets the current date, formats it to the layout needed, subtracts 90 days, then returns it as a Calendar.
+     * @return The current date as a Calendar type.
+     * @throws ParseException 
+     */
     public Calendar minus90DaysDateFinder() throws ParseException{
         DateTimeFormatter formatDate = DateTimeFormatter.ofPattern("MM-dd-yyyy");
         
@@ -311,16 +437,39 @@ public class VisitReportsController implements Initializable {
         return calendar;
     }
     
-    @FXML
-    void onActionHome(ActionEvent event) throws IOException {
-        switchScreens("/view/Home.fxml", event);
-    }
-
-    @FXML
-    void onActionReportsMenu(ActionEvent event) throws IOException {
-        switchScreens("/view/reportsMenu.fxml", event);
+    /**
+     * Fills the array list with the list of years, then loads the combo box with the list.
+     */
+    public void fillComboYeare(){
+        yearList.addAll("Current Year", "Last Year");
+        comboYear.setItems(yearList);
     }
     
+    /**
+     * Gets the selected year, and returns that years number.
+     * @return The year as an int.
+     * @throws ParseException 
+     */
+    public int selectYear() throws ParseException{
+        int selectedYear = 2000;
+        
+        if(comboYear.getValue().equalsIgnoreCase("Current Year")){
+            Calendar year = currentDateFinder();
+            selectedYear = year.get(Calendar.YEAR);
+        }
+        else if(comboYear.getValue().equalsIgnoreCase("Last Year")){
+            Calendar year = currentDateFinder();
+            selectedYear = year.get(Calendar.YEAR) - 1;
+        }
+        return selectedYear;
+    }
+    
+    /**
+     * Makes it easier to switches between screens and not have all this repeated each time the screen is changed.
+     * @param location FXML file name to switch too.
+     * @param actionEvent Stores the action event.
+     * @throws IOException  Throws IO Exception.
+     */
      public void switchScreens(String location, ActionEvent actionEvent) throws IOException {
         
         FXMLLoader loader = new FXMLLoader();
@@ -331,4 +480,11 @@ public class VisitReportsController implements Initializable {
         stage.setScene(new Scene(scene));
         stage.show();
     }
+    
+    AlertInfo infoAlert = (dialog, message) -> {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(dialog);
+        alert.setContentText(message);
+        alert.showAndWait();
+    };
 }

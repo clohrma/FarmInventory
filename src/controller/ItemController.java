@@ -39,9 +39,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import model.Item;
 import utilities.AlertConfirm;
-import utilities.AlertError;
 import utilities.AlertInfo;
-import utilities.AlertWarning;
 
 /**
  * FXML Controller class
@@ -182,7 +180,7 @@ public class ItemController implements Initializable {
     }
     
     /**
-     * Brags all the animals from the database and loads the combo box with them.
+     * Brings all the animal names listed in the database and loads the combo box with them.
      * @throws SQLException 
      */
     public void fillComboAnimalFor() throws SQLException{
@@ -251,7 +249,7 @@ public class ItemController implements Initializable {
     }
     
     /**
-     * Loads or refreshes with the latest items listed from the database to the table view.
+     * Loads or refreshes the table view with the latest items listed from the database to the table view.
      * @throws SQLException 
      */
     public void refreshItemsTable() throws SQLException{
@@ -297,20 +295,6 @@ public class ItemController implements Initializable {
         stage.setScene(new Scene(scene));
         stage.show();
     }
-    
-    AlertWarning warning = (title, message) -> {
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle(title);
-        alert.setContentText(message);
-        alert.showAndWait();
-    };
-    
-    AlertError error = (dialog, message) -> {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle(dialog);
-        alert.setContentText(message);
-        alert.showAndWait();
-    };
     
     AlertInfo infoAlert = (dialog, message) -> {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);

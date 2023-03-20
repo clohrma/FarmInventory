@@ -40,9 +40,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import model.Animal;
 import utilities.AlertConfirm;
-import utilities.AlertError;
 import utilities.AlertInfo;
-import utilities.AlertWarning;
 
 
 /**
@@ -238,7 +236,7 @@ public class AnimalController implements Initializable {
     }
     
     /**
-     * 
+     * Get the information from the database for the selected animal and loads the text fields and combo boxes.
      * @param sentAnimalID The ID for the selected animal.
      * @throws SQLException 
      * @throws Exception 
@@ -291,7 +289,7 @@ public class AnimalController implements Initializable {
      * Updates the TableView to the newest data.
      * @throws SQLException 
      */
-    private void refreshAnimalTable() throws SQLException{
+    public void refreshAnimalTable() throws SQLException{
         tblvwDisplay.setItems(AnimalQueries.getAllAnimals());
     }
     
@@ -311,20 +309,6 @@ public class AnimalController implements Initializable {
         stage.setScene(new Scene(scene));
         stage.show();
     }
-    
-    AlertWarning warning = (title, message) -> {
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle(title);
-        alert.setContentText(message);
-        alert.showAndWait();
-    };
-    
-    AlertError error = (dialog, message) -> {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle(dialog);
-        alert.setContentText(message);
-        alert.showAndWait();
-    };
     
     AlertInfo infoAlert = (dialog, message) -> {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);

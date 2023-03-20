@@ -10,7 +10,6 @@ import java.net.URL;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Optional;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -24,10 +23,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import utilities.AlertConfirm;
 import utilities.AlertError;
-import utilities.AlertInfo;
-import utilities.AlertWarning;
 
 /**
  * FXML Controller class
@@ -46,8 +42,14 @@ public class LoginScreenController implements Initializable {
         // TODO
     }
     
+    /**
+     * Takes the data entered for username and password and verifies it with the database and add a log entry.
+     * @param event
+     * @throws IOException
+     * @throws SQLException 
+     */
     @FXML
-    void onActionLogin(ActionEvent event) throws IOException, SQLException {
+    public void onActionLogin(ActionEvent event) throws IOException, SQLException {
         
         String uName = txtUsername.getText();
         String password = pwdPassword.getText();
@@ -61,15 +63,27 @@ public class LoginScreenController implements Initializable {
         }
     }
     
+    /**
+     * Exits the program after confirming you want to leave.
+     * @param event 
+     */
     @FXML
-    private void onActionExit(ActionEvent event) {
+    public void onActionExit(ActionEvent event) {
         String meassage = "Are you sure you want to exit?";
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION, meassage);
         alert.showAndWait().filter(result -> result == ButtonType.OK).ifPresent(result -> {System.exit(0);});
         JDBC.closeConnection();
     }
     
-    private boolean usernamePasswordCheck(String name, String password) throws SQLException {
+    /**
+     * What is typed in to username and password at the login screen is then passed here to verify with the database,
+     * if they are correct it returns true and if they are not returns false.
+     * @param name The information the user typed for username.
+     * @param password The information the user typed for password.
+     * @return true or false
+     * @throws SQLException 
+     */
+    public boolean usernamePasswordCheck(String name, String password) throws SQLException {
         String sql = "SELECT * FROM user WHERE userName = ? AND uesrPassword = ?";
         PreparedStatement statement = JDBC.getConnection().prepareStatement(sql);
         statement.setString(1, name);
@@ -84,6 +98,12 @@ public class LoginScreenController implements Initializable {
         return false;
     }
     
+    /**
+     * Makes it easier to switches between screens and not have all this repeated each time the screen is changed.
+     * @param location FXML file name to switch too.
+     * @param actionEvent Stores the action event.
+     * @throws IOException  Throws IO Exception.
+     */
     public void switchScreens(String location, ActionEvent actionEvent) throws IOException {
         
         FXMLLoader loader = new FXMLLoader();
@@ -95,32 +115,10 @@ public class LoginScreenController implements Initializable {
         stage.show();
     }
     
-    AlertWarning warning = (title, message) -> {
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle(title);
-        alert.setContentText(message);
-        alert.showAndWait();
-    };
-    
     AlertError error = (dialog, message) -> {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle(dialog);
         alert.setContentText(message);
         alert.showAndWait();
-    };
-    
-    AlertInfo infoAlert = (dialog, message) -> {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(dialog);
-        alert.setContentText(message);
-        alert.showAndWait();
-    };
-    
-    AlertConfirm confirm = (title, contentText) -> {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle(title);
-        alert.setContentText(contentText);
-        Optional<ButtonType> result = alert.showAndWait();
-        return result.get() == ButtonType.OK;
     };
 }

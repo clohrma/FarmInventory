@@ -40,7 +40,7 @@ public class HomeController implements Initializable {
      * @throws IOException  Throws IO Exception.
      */
     @FXML
-    void onActionVisits(ActionEvent event) throws IOException {
+    public void onActionVisits(ActionEvent event) throws IOException {
         switchScreens("/view/visit.fxml", event);
     }
     
@@ -50,7 +50,7 @@ public class HomeController implements Initializable {
      * @throws IOException  Throws IO Exception.
      */
     @FXML
-    void onActionItems(ActionEvent event) throws IOException {
+    public void onActionItems(ActionEvent event) throws IOException {
         switchScreens("/view/item.fxml", event);
     }
 
@@ -60,7 +60,7 @@ public class HomeController implements Initializable {
      * @throws IOException  Throws IO Exception.
      */
     @FXML
-    void onActionMedications(ActionEvent event) throws IOException {
+    public void onActionMedications(ActionEvent event) throws IOException {
         switchScreens("/view/medication.fxml", event);
     }
 
@@ -70,7 +70,7 @@ public class HomeController implements Initializable {
      * @throws IOException  Throws IO Exception.
      */
     @FXML
-    void onActionAnimals(ActionEvent event) throws IOException {
+    public void onActionAnimals(ActionEvent event) throws IOException {
         switchScreens("/view/animal.fxml", event);
     }
 
@@ -80,23 +80,28 @@ public class HomeController implements Initializable {
      * @throws IOException  Throws IO Exception.
      */
     @FXML
-    void onActionReports(ActionEvent event) throws IOException {
+    public void onActionReports(ActionEvent event) throws IOException {
         switchScreens("/view/reportsMenu.fxml", event);
     }
     
     /**
      * Switches to the Exit screen menu.
      * @param event Stores the mouse event.
-     * @throws IOException  Throws IO Exception.
      */
     @FXML
-    void onActionExit(ActionEvent event) {
+    public void onActionExit(ActionEvent event) {
         String message = "Are you sure you want to exit the program?";
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION, message);
         alert.showAndWait().filter(result -> result == ButtonType.OK).ifPresent(result -> {System.exit(0);});
         JDBC.closeConnection();
     }
-
+    
+    /**
+     * Makes it easier to switches between screens and not have all this repeated each time the screen is changed.
+     * @param location FXML file name to switch too.
+     * @param actionEvent Stores the action event.
+     * @throws IOException  Throws IO Exception.
+     */
     public void switchScreens(String location, ActionEvent actionEvent) throws IOException {
         
         FXMLLoader loader = new FXMLLoader();

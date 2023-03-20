@@ -46,7 +46,6 @@ public class AnimalReportsController implements Initializable {
     private TableColumn<Animal, String> tblColName;
     @FXML
     private TableColumn<Animal, String> tblColType;
-
     
      /**
      * Initializes the controller class.
@@ -84,7 +83,7 @@ public class AnimalReportsController implements Initializable {
      * @throws IOException  Throws IO Exception.
      */
     @FXML
-    void onActionHome(ActionEvent event) throws IOException {
+    public void onActionHome(ActionEvent event) throws IOException {
         switchScreens("/view/Home.fxml", event);
     }
     
@@ -94,7 +93,7 @@ public class AnimalReportsController implements Initializable {
      * @throws IOException  Throws IO Exception.
      */
     @FXML 
-    void onActionReportsMenu(ActionEvent event) throws IOException {
+    public void onActionReportsMenu(ActionEvent event) throws IOException {
         switchScreens("/view/reportsMenu.fxml", event);
     }
     

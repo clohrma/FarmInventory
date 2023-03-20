@@ -39,9 +39,7 @@ import javafx.scene.control.ComboBox;
 import javafx.stage.Stage;
 import model.Medication;
 import utilities.AlertConfirm;
-import utilities.AlertError;
 import utilities.AlertInfo;
-import utilities.AlertWarning;
 
 
 
@@ -100,9 +98,13 @@ public class MedicationController implements Initializable {
             Logger.getLogger(VisitController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+    /**
+     * Takes the entered data and creates a new Medication then adds it to the database or takes the updated information and updates the database.
+     * @param event
+     * @throws SQLException 
+     */
     @FXML
-    private void onActionAdd(ActionEvent event) throws SQLException {
+    public void onActionAdd(ActionEvent event) throws SQLException {
         
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd-yyyy");
         int currentID = medID;
@@ -138,8 +140,15 @@ public class MedicationController implements Initializable {
         refreshMedTable();
     }
 
+    /**
+     * Gets the Medication ID of the selected med and confirms that you want to delete it.
+     * Then sends the request to the database to delete the medication. 
+     * After that is done the table view is then reloaded and the text fields are cleared.
+     * @param event
+     * @throws SQLException 
+     */
     @FXML
-    private void onActionDelete(ActionEvent event) throws SQLException {
+    public void onActionDelete(ActionEvent event) throws SQLException {
         
         String name = txtName.getText();
         
@@ -151,8 +160,12 @@ public class MedicationController implements Initializable {
         refreshMedTable();
     }
     
+    /**
+     * Calls the clear fields method when the button is clicked.
+     * @param event 
+     */
     @FXML
-    private void onActionClear(ActionEvent event) {
+    public void onActionClear(ActionEvent event) {
         clearFields();
     }
     
@@ -173,16 +186,25 @@ public class MedicationController implements Initializable {
             switchScreens("/view/Home.fxml", event);
         }
     }
-   
+    
+    /**
+     * Clears the text fields. Gets the medID of the selected medication in the table view.
+     * @param event
+     * @throws Exception 
+     */
     @FXML
-    private void onMouseClickRowHandler(MouseEvent event) throws Exception {
+    public void onMouseClickRowHandler(MouseEvent event) throws Exception {
         clearFields();
         try {
             tableviewSelectHandler(tblvwDisplay.getSelectionModel().getSelectedItem().getMedID());
         } catch (NullPointerException e){ }
     }
     
-    private void fillComboAnimalFor() throws SQLException{
+    /**
+     * Brings all the animal names listed in the database and loads the combo box with them.
+     * @throws SQLException 
+     */
+    public void fillComboAnimalFor() throws SQLException{
         
     String sql = "SELECT name FROM animal";
         PreparedStatement ps = JDBC.connection.prepareStatement(sql);
@@ -192,7 +214,13 @@ public class MedicationController implements Initializable {
          }
     }
     
-    private void tableviewSelectHandler(int sentMedID) throws SQLException, Exception {
+    /**
+     * Get the information from the database for the selected medication and loads the text fields and combo boxes.
+     * @param sentMedID The medication ID to search the database.
+     * @throws SQLException
+     * @throws Exception 
+     */
+    public void tableviewSelectHandler(int sentMedID) throws SQLException, Exception {
         
         PreparedStatement ps = JDBC.connection.prepareStatement("Select * FROM medication WHERE medID = ?");
         ps.setInt(1, sentMedID);
@@ -221,7 +249,10 @@ public class MedicationController implements Initializable {
         }
     }
     
-    private void clearFields(){
+    /**
+     * Clears all the fields, set medID back to -1, and sets combo boxes to blank.
+     */
+    public void clearFields(){
         medID = -1;
         datePurchaseDate.getEditor().clear();
         comboAnimalFor.valueProperty().set(null);
@@ -231,7 +262,11 @@ public class MedicationController implements Initializable {
         rbnEmergencyNo.setSelected(true);
     }
     
-    private void refreshMedTable() throws SQLException{
+    /**
+     * Loads or refreshes the table view with the latest medications listed from the database to the table view.
+     * @throws SQLException 
+     */
+    public void refreshMedTable() throws SQLException{
         tblvwDisplay.setItems(MedicationQueries.getAllMeds());
     }
     
@@ -250,6 +285,13 @@ public class MedicationController implements Initializable {
         return date;
     }
     
+    
+    /**
+     * Makes it easier to switches between screens and not have all this repeated each time the screen is changed.
+     * @param location FXML file name to switch too.
+     * @param actionEvent Stores the action event.
+     * @throws IOException  Throws IO Exception.
+     */
     public void switchScreens(String location, ActionEvent actionEvent) throws IOException {
         
         FXMLLoader loader = new FXMLLoader();
@@ -260,20 +302,6 @@ public class MedicationController implements Initializable {
         stage.setScene(new Scene(scene));
         stage.show();
     }
-    
-    AlertWarning warning = (title, message) -> {
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle(title);
-        alert.setContentText(message);
-        alert.showAndWait();
-    };
-    
-    AlertError error = (dialog, message) -> {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle(dialog);
-        alert.setContentText(message);
-        alert.showAndWait();
-    };
     
     AlertInfo infoAlert = (dialog, message) -> {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
