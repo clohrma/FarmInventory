@@ -402,6 +402,33 @@ public class ItemReportsController implements Initializable {
     }
     
     /**
+     * Fills the array list with the list of years, then loads the combo box with the list.
+     */
+    public void fillComboYeare(){
+        yearList.addAll("Current Year", "Last Year");
+        comboYear.setItems(yearList);
+    }
+    
+    /**
+     * Gets the selected year, and returns that years number.
+     * @return The year as an int.
+     * @throws ParseException 
+     */
+    public int selectYear() throws ParseException{
+        int selectedYear = 2000;
+        
+        if(comboYear.getValue().equalsIgnoreCase("Current Year")){
+            Calendar year = currentDateFinder();
+            selectedYear = year.get(Calendar.YEAR);
+        }
+        else if(comboYear.getValue().equalsIgnoreCase("Last Year")){
+            Calendar year = currentDateFinder();
+            selectedYear = year.get(Calendar.YEAR) - 1;
+        }
+        return selectedYear;
+    }
+    
+    /**
      * Makes it easier to switches between screens and not have all this repeated each time the screen is changed.
      * @param location FXML file name to switch too.
      * @param actionEvent Stores the action event.
