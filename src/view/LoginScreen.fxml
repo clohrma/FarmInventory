@@ -39,8 +39,8 @@
                         <Font size="18.0" />
                     </font>
                 </Label>
-                <TextField fx:id="txtUsername" promptText="Username" text="Craig" GridPane.columnIndex="1" />
-                <PasswordField fx:id="pwdPassword" promptText="Password" text="Test!" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                <TextField fx:id="txtUsername" promptText="Username" text="" GridPane.columnIndex="1" />
+                <PasswordField fx:id="pwdPassword" promptText="Password" text="" GridPane.columnIndex="1" GridPane.rowIndex="1" />
             </children>
         </GridPane>
         <HBox alignment="CENTER" layoutX="5.0" layoutY="155.0" prefHeight="40.0" prefWidth="240.0" spacing="40.0">
