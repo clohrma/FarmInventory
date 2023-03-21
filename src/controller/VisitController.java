@@ -174,7 +174,7 @@ public class VisitController implements Initializable{
             }
         }
         else{
-            infoAlert.alertInfomation("Select an Animal to Delete", "Please select an Animal to delete.");
+            infoAlert.alertInfomation("Select a Visit to Delete", "Please select a Visit to delete.");
         }
         clearFields();
         refreshVisitsTable();

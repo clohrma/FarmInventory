@@ -155,7 +155,7 @@ public class ItemController implements Initializable {
             }
         }
         else{
-            infoAlert.alertInfomation("Select an Animal to Delete", "Please select an Animal to delete.");
+            infoAlert.alertInfomation("Select a Item to Delete", "Please select a Item to delete.");
         }
         clearFields();
         refreshItemsTable();
