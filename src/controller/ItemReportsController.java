@@ -13,7 +13,6 @@ import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
@@ -396,33 +395,6 @@ public class ItemReportsController implements Initializable {
         }
         else if(comboYear.getValue().equalsIgnoreCase("Last Year")){
             Calendar year = dates.currentDateFinder();
-            selectedYear = year.get(Calendar.YEAR) - 1;
-        }
-        return selectedYear;
-    }
-    
-    /**
-     * Fills the array list with the list of years, then loads the combo box with the list.
-     */
-    public void fillComboYeare(){
-        yearList.addAll("Current Year", "Last Year");
-        comboYear.setItems(yearList);
-    }
-    
-    /**
-     * Gets the selected year, and returns that years number.
-     * @return The year as an int.
-     * @throws ParseException 
-     */
-    public int selectYear() throws ParseException{
-        int selectedYear = 2000;
-        
-        if(comboYear.getValue().equalsIgnoreCase("Current Year")){
-            Calendar year = currentDateFinder();
-            selectedYear = year.get(Calendar.YEAR);
-        }
-        else if(comboYear.getValue().equalsIgnoreCase("Last Year")){
-            Calendar year = currentDateFinder();
             selectedYear = year.get(Calendar.YEAR) - 1;
         }
         return selectedYear;
