@@ -15,7 +15,7 @@ import javafx.collections.ObservableList;
 import model.Animal;
 
 /**
- *
+ * 
  * @author Craig Lohrman
  */
 public class AnimalQueries {

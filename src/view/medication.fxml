@@ -18,18 +18,18 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" prefHeight="380.0" prefWidth="800.0" styleClass="mainFxmlClass" 
+<AnchorPane id="AnchorPane" prefHeight="430.0" prefWidth="800.0" styleClass="mainFxmlClass" 
             xmlns="http://javafx.com/javafx/" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MedicationController">
     <stylesheets>
         <URL value="@farmInventory.css" />
     </stylesheets>
    <children>
-      <Label alignment="CENTER" layoutX="5.0" layoutY="10.0" prefHeight="30.0" prefWidth="295.0" styleClass="title" text="Medication">
+      <Label alignment="CENTER" layoutX="5.0" layoutY="10.0" prefHeight="30.0" prefWidth="285.0" styleClass="title" text="Medication">
          <font>
             <Font name="System Bold" size="14.0" />
          </font>
       </Label>
-      <GridPane layoutX="5.0" layoutY="40.0" prefHeight="275.0" prefWidth="295.0">
+      <GridPane layoutX="5.0" layoutY="50.0" prefHeight="275.0" prefWidth="285.0">
         <columnConstraints>
           <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="150.0" minWidth="10.0" prefWidth="150.0" />
           <ColumnConstraints hgrow="SOMETIMES" maxWidth="147.0" minWidth="10.0" prefWidth="145.0" />
@@ -66,15 +66,23 @@
             <ComboBox fx:id="comboAnimalFor" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
          </children>
       </GridPane>
-      <HBox alignment="CENTER" layoutX="5.0" layoutY="340.0" prefHeight="30.0" prefWidth="295.0" spacing="5.0">
+      <GridPane layoutX="5.0" layoutY="330.0" prefHeight="100.0" prefWidth="295.0">
+        <columnConstraints>
+          <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+          <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
+        </rowConstraints>
          <children>
-            <Button mnemonicParsing="false" onAction="#onActionAdd" prefHeight="30.0" prefWidth="100.0" styleClass="addBtn" text="Add" />
-            <Button mnemonicParsing="false" onAction="#onActionDelete" prefHeight="30.0" prefWidth="110.0" styleClass="deleteBtn" text="Delete" />
-            <Button mnemonicParsing="false" onAction="#onActionClear" prefHeight="30.0" prefWidth="100.0" styleClass="clearBtn" text="Clear" />
-            <Button mnemonicParsing="false" onAction="#onActionHome" prefHeight="30.0" prefWidth="100.0" styleClass="homedBtn" text="Home" />
+            <Button mnemonicParsing="false" onAction="#onActionAdd" prefHeight="30.0" prefWidth="130.0" styleClass="addBtn" text="Add/Update" />
+            <Button mnemonicParsing="false" onAction="#onActionDelete" prefHeight="30.0" prefWidth="130.0" styleClass="deleteBtn" text="Delete" GridPane.columnIndex="1" />
+            <Button mnemonicParsing="false" onAction="#onActionClear" prefHeight="30.0" prefWidth="130.0" styleClass="clearBtn" text="Clear" GridPane.rowIndex="1" />
+            <Button mnemonicParsing="false" onAction="#onActionHome" prefHeight="30.0" prefWidth="130.0" styleClass="homedBtn" text="Home" GridPane.columnIndex="1" GridPane.rowIndex="1" />
          </children>
-      </HBox>
-      <TableView fx:id="tblvwDisplay" layoutX="310.0" layoutY="5.0" onMouseClicked="#onMouseClickRowHandler" prefHeight="370.0" prefWidth="485.0">
+      </GridPane>
+      <TableView fx:id="tblvwDisplay" layoutX="305.0" layoutY="5.0" onMouseClicked="#onMouseClickRowHandler" prefHeight="420.0" prefWidth="490.0">
          <columns>
             <TableColumn fx:id="tblColName" prefWidth="106.0" text="Name" />
             <TableColumn fx:id="tblColDate" prefWidth="113.0" text="Date Purchased" />
