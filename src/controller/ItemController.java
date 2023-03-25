@@ -78,6 +78,8 @@ public class ItemController implements Initializable {
     
     /**
      * Initializes the controller class.
+     * @param url
+     * @param rb
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -118,8 +120,9 @@ public class ItemController implements Initializable {
                 String dateOfPurchase = getDate.format(formatter);
                 String type = comboItemType.getValue();
                 double cost = Double.parseDouble(txtItemCost.getText());
+                String year = String.valueOf(getDate.getYear());
 
-                ItemQueries.insert(name, animalFor, dateOfPurchase, type, cost, reason);
+                ItemQueries.insert(name, animalFor, dateOfPurchase, type, cost, reason, year);
             }
             else{
                 int currentItemID = itemID;
@@ -130,8 +133,9 @@ public class ItemController implements Initializable {
                 String dateOfPurchase = getDate.format(formatter);
                 String type = comboItemType.getValue();
                 double cost = Double.parseDouble(txtItemCost.getText());
+                String year = String.valueOf(getDate.getYear());
 
-                ItemQueries.update(currentItemID, name, animalFor, dateOfPurchase, type, cost, reason);
+                ItemQueries.update(currentItemID, name, animalFor, dateOfPurchase, type, cost, reason, year);
             }
             clearFields();
             refreshItemsTable();
@@ -203,9 +207,9 @@ public class ItemController implements Initializable {
     }
     
     /**
-     * Clears the text fields. Gets the itemID of the selected item in the table view.
-     * @param event
-     * @throws Exception 
+     * Clears the text fields.Gets the itemID of the selected item in the table view.
+     * @param event 
+     * @throws java.sql.SQLException 
      */
     @FXML
     public void onMouseClickItemRowHandler(MouseEvent event) throws SQLException {

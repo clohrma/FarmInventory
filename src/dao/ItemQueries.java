@@ -19,10 +19,10 @@ import model.Item;
  * @author Craig Lohrman
  */
 public class ItemQueries {
-    public static int insert(String name, String animalFor, String dateOfPurchase, String type, double cost, String reason) throws SQLException {
+    public static int insert(String name, String animalFor, String dateOfPurchase, String type, double cost, String reason, String year) throws SQLException {
         
-        String sql = "INSERT INTO item (name, animalFor, dateOfPurchase, type, cost, reason) "
-                + "VALUES(?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO item (name, animalFor, dateOfPurchase, type, cost, reason, year) "
+                + "VALUES(?, ?, ?, ?, ?, ?, ?)";
         
         PreparedStatement ps = JDBC.connection.prepareStatement(sql);
         ps.setString(1, name);
@@ -31,14 +31,14 @@ public class ItemQueries {
         ps.setString(4, type);
         ps.setDouble(5, cost);
         ps.setString(6, reason);
+        ps.setString(7, year);
         
-        int rowsAffected = ps.executeUpdate();
-        return rowsAffected;
+        return ps.executeUpdate();
     }
     
-    public static int update(int itemID, String name, String animalFor, String dateOfPurchase, String type, double cost, String reason) throws SQLException {
+    public static int update(int itemID, String name, String animalFor, String dateOfPurchase, String type, double cost, String reason, String year) throws SQLException {
         
-    String sql = "UPDATE item SET itemID = ?, name = ?, animalFor = ?, dateOfPurchase = ?, type = ?, cost = ?, reason = ? "
+    String sql = "UPDATE item SET itemID = ?, name = ?, animalFor = ?, dateOfPurchase = ?, type = ?, cost = ?, reason = ?, year = ?"
                 + "WHERE (itemID = ?)";
     
         PreparedStatement ps = JDBC.connection.prepareStatement(sql);
@@ -49,10 +49,10 @@ public class ItemQueries {
         ps.setString(5, type);
         ps.setDouble(6, cost);
         ps.setString(7, reason);
-        ps.setInt(8, itemID);
+        ps.setString(8, year);
+        ps.setInt(9, itemID);
         
-        int rowsAffected = ps.executeUpdate();
-        return rowsAffected;
+        return ps.executeUpdate();
     }
     
     public static int delete(int itemID) throws SQLException{
@@ -80,8 +80,9 @@ public class ItemQueries {
             String type = rs.getString("type");
             double cost = rs.getDouble("cost");
             String reason = rs.getString("reason");
+            String year = rs.getString("year");
             
-            Item newItem =  new Item(itemID, name, animalFor, dateOfPurchase, type, cost, reason);
+            Item newItem =  new Item(itemID, name, animalFor, dateOfPurchase, type, cost, reason, year);
             
             allfoodSupplyItems.add(newItem);
         }

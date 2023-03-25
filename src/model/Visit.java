@@ -11,10 +11,10 @@ package model;
 public class Visit {
     
     private int visitID;
-    private String type, name, dateOfService, animalFor, emergency, reason;
+    private String type, name, dateOfService, animalFor, emergency, reason, year;
     private double cost;
 
-    public Visit(int visitID, String name, String animalFor, String dateOfService, String type, double cost, String emergency, String reason) {
+    public Visit(int visitID, String name, String animalFor, String dateOfService, String type, double cost, String emergency, String reason, String year) {
         this.visitID = visitID;
         this.type = type;
         this.name = name;
@@ -23,6 +23,7 @@ public class Visit {
         this.emergency = emergency;
         this.reason = reason;
         this.cost = cost;
+        this.year = year;
     }
 
     public int getVisitID() {
@@ -88,6 +89,12 @@ public class Visit {
     public void setCost(double cost) {
         this.cost = cost;
     }
-    
-    
+
+    public String getYear() {
+        return year;
+    }
+
+    public void setYear(String year) {
+        this.year = year;
+    }
 }

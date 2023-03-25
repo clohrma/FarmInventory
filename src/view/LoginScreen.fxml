@@ -12,8 +12,8 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" prefHeight="200.0" prefWidth="250.0" styleClass="mainFxmlClass"
-            xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/" fx:controller="controller.LoginScreenController">
+<AnchorPane id="AnchorPane" prefHeight="200.0" prefWidth="250.0" styleClass="mainFxmlClass" 
+            xmlns="http://javafx.com/javafx/" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.LoginScreenController">
     <stylesheets>
         <URL value="@farmInventory.css" />
     </stylesheets>
@@ -39,8 +39,8 @@
                         <Font size="18.0" />
                     </font>
                 </Label>
-                <TextField fx:id="txtUsername" promptText="Username" text="" GridPane.columnIndex="1" />
-                <PasswordField fx:id="pwdPassword" promptText="Password" text="" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                <TextField fx:id="txtUsername" promptText="Username" text="Craig" GridPane.columnIndex="1" />
+                <PasswordField fx:id="pwdPassword" promptText="Password" text="Test!" GridPane.columnIndex="1" GridPane.rowIndex="1" />
             </children>
         </GridPane>
         <HBox alignment="CENTER" layoutX="5.0" layoutY="155.0" prefHeight="40.0" prefWidth="240.0" spacing="40.0">

@@ -19,10 +19,10 @@ import model.Medication;
  */
 public class MedicationQueries {
     
-    public static int insert(String name, String animalFor, String dateOfPurchase, double cost, String emergency, String reason) throws SQLException {
+    public static int insert(String name, String animalFor, String dateOfPurchase, double cost, String emergency, String reason, String year) throws SQLException {
         
-        String sql = "INSERT INTO medication (name, animalFor, dateOfPurchase, cost, emergency, reason) "
-                + "VALUES(?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO medication (name, animalFor, dateOfPurchase, cost, emergency, reason, year) "
+                + "VALUES(?, ?, ?, ?, ?, ?, ?)";
         
         PreparedStatement ps = JDBC.connection.prepareStatement(sql);
         ps.setString(1, name);
@@ -31,14 +31,15 @@ public class MedicationQueries {
         ps.setDouble(4, cost);
         ps.setString(5, emergency);
         ps.setString(6, reason);
+        ps.setString(7, year);
         
         int rowsAffected = ps.executeUpdate();
         return rowsAffected;
     }
     
-     public static int update(int medID, String name, String animalFor, String dateOfPurchase, double cost, String emergency, String reason) throws SQLException {
+     public static int update(int medID, String name, String animalFor, String dateOfPurchase, double cost, String emergency, String reason, String year) throws SQLException {
          
-         String sql = "UPDATE medication SET medID = ?, name = ?, animalFor = ?, dateOfPurchase = ?, cost = ?, emergency = ?, reason = ? "
+         String sql = "UPDATE medication SET medID = ?, name = ?, animalFor = ?, dateOfPurchase = ?, cost = ?, emergency = ?, reason = ?, year = ? "
                 + "WHERE (medID = ?)";
     
         PreparedStatement ps = JDBC.connection.prepareStatement(sql);
@@ -49,7 +50,8 @@ public class MedicationQueries {
         ps.setDouble(5, cost);
         ps.setString(6, emergency);
         ps.setString(7, reason);
-        ps.setInt(8, medID);
+        ps.setString(8, year);
+        ps.setInt(9, medID);
         
         int rowsAffected = ps.executeUpdate();
         return rowsAffected;
@@ -80,8 +82,9 @@ public class MedicationQueries {
             double cost = rs.getDouble("cost");
             String reason = rs.getString("reason");
             String emergency = rs.getString("emergency");
+            String year = rs.getString("year");
             
-            Medication newMed =  new Medication(medID, name, animalFor, dateOfPurchase, cost, emergency, reason);
+            Medication newMed =  new Medication(medID, name, animalFor, dateOfPurchase, cost, emergency, reason, year);
                                                 
             allMeds.add(newMed);
         }

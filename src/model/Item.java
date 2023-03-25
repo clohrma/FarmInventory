@@ -11,10 +11,10 @@ package model;
 public class Item {
     
     private int itemID;
-    private String name, animalFor, dateOfPurchase, type, reason;
+    private String name, animalFor, dateOfPurchase, type, reason, year;
     private double cost;
 
-    public Item(int itemID, String name, String animalFor, String dateOfPurchase, String type, double cost, String reason) {
+    public Item(int itemID, String name, String animalFor, String dateOfPurchase, String type, double cost, String reason, String year) {
         this.itemID = itemID;
         this.name = name;
         this.animalFor = animalFor;
@@ -22,6 +22,7 @@ public class Item {
         this.type = type;
         this.reason = reason;
         this.cost = cost;
+        this.year = year;
     }
 
     public int getItemID() {
@@ -64,14 +65,6 @@ public class Item {
         this.type = type;
     }
 
-    public String getReason() {
-        return reason;
-    }
-
-    public void setReason(String reason) {
-        this.reason = reason;
-    }
-
     public double getCost() {
         return cost;
     }
@@ -80,5 +73,20 @@ public class Item {
         this.cost = cost;
     }
     
+    public String getReason() {
+        return reason;
+    }
+
+    public void setReason(String reason) {
+        this.reason = reason;
+    }
+
+    public String getYear() {
+        return year;
+    }
+
+    public void setYear(String year) {
+        this.year = year;
+    }
     
 }

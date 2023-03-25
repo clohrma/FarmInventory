@@ -4,10 +4,14 @@
  */
 package controller;
 
+import dao.AnimalQueries;
+import dao.JDBC;
 import dao.MedicationQueries;
 import java.io.IOException;
 import java.math.RoundingMode;
 import java.net.URL;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.text.ParseException;
@@ -49,6 +53,8 @@ import utilities.Dates;
 public class MedicationReportController implements Initializable {
     
     ObservableList<String> yearList = FXCollections.observableArrayList();
+    ObservableList<String> animalNameList = FXCollections.observableArrayList();
+    int selectedYear;
     Dates dates = new Dates();
 
     @FXML
@@ -66,12 +72,16 @@ public class MedicationReportController implements Initializable {
     @FXML
     private TableColumn<Medication, String> tblColReason;
     @FXML
+    private ComboBox<String> comboAnimal;
+    @FXML
     private ComboBox<String> comboYear;
     @FXML
     private Label showTotalCost;
     
     /**
      * Initializes the controller class.
+     * @param url
+     * @param rb
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -93,10 +103,12 @@ public class MedicationReportController implements Initializable {
         tblColReason.setCellValueFactory(cellData -> {
             return new ReadOnlyStringWrapper(cellData.getValue().getReason());
         });
-        fillComboYeare();
+        
         try {
             tableDisplayloader();
-        } catch (SQLException ex) {
+            fillComboAnimal();
+            fillComboYeare();
+        } catch (SQLException | ParseException ex) {
             Logger.getLogger(MedicationReportController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }    
@@ -119,28 +131,60 @@ public class MedicationReportController implements Initializable {
      */
     @FXML
     public void onAction30Days(ActionEvent event) throws ParseException, SQLException {
-        
         double cost = 0.00;
+        int nameCount = 0;
         
-        ObservableList<Medication> filteredMeds = FXCollections.observableArrayList();
+        ObservableList<Medication> filteredItems = FXCollections.observableArrayList();
         Calendar currentDate = dates.currentDateFinder();
         Calendar minus30Days = dates.minus30DaysDateFinder();
+        String animalName = comboAnimal.getValue();
         
-        for(Medication med : MedicationQueries.getAllMeds()){
-            String purchaseDate = med.getDateOfPurchase();
-            Date datePurchased = new SimpleDateFormat("MM-dd-yyyy", Locale.ENGLISH).parse(purchaseDate);
-            Calendar dateBought = Calendar.getInstance();
-            dateBought.setTime(datePurchased);
-            
-            if(dateBought.after(minus30Days) && dateBought.before(currentDate)){
-                filteredMeds.add(med);
-                cost += med.getCost();
+        try{
+            if(animalName.equalsIgnoreCase("All") || animalName.isBlank() || animalName.isEmpty()) {
+                for(Medication item : MedicationQueries.getAllMeds()){
+                    String purchaseDate = item.getDateOfPurchase();
+                    Date datePurchased = new SimpleDateFormat("MM-dd-yyyy", Locale.ENGLISH).parse(purchaseDate);
+                    Calendar dateBought = Calendar.getInstance();
+                    dateBought.setTime(datePurchased);
+
+                    if(dateBought.after(minus30Days) && dateBought.before(currentDate)){
+                        filteredItems.add(item);
+                        cost += item.getCost();
+                        nameCount += 1;
+                    }
+                    tableDisplay.setItems(filteredItems);
+                    DecimalFormat decimalFormat = new DecimalFormat("#,###.##");
+                    decimalFormat.setRoundingMode(RoundingMode.HALF_UP);
+                    String formatedCost = decimalFormat.format(cost);
+                    showTotalCost.setText(formatedCost);
+                }
             }
-            tableDisplay.setItems(filteredMeds);
-            DecimalFormat df = new DecimalFormat("#,###.##");
-            df.setRoundingMode(RoundingMode.HALF_UP);
-            String rounded = df.format(cost);
-            showTotalCost.setText(rounded);
+            else{
+                for(Medication item : MedicationQueries.getAllMeds()){
+                        if(item.getAnimalFor().equalsIgnoreCase(animalName)){
+                            String purchaseDate = item.getDateOfPurchase();
+                            Date datePurchased = new SimpleDateFormat("MM-dd-yyyy", Locale.ENGLISH).parse(purchaseDate);
+                            Calendar dateBought = Calendar.getInstance();
+                            dateBought.setTime(datePurchased);
+
+                            if(dateBought.after(minus30Days) && dateBought.before(currentDate) && animalName.equalsIgnoreCase(item.getAnimalFor())){
+                                filteredItems.add(item);
+                                cost += item.getCost();
+                                nameCount += 1;
+                            }
+                            tableDisplay.setItems(filteredItems);
+                            DecimalFormat decimalFormat = new DecimalFormat("#,###.##");
+                            decimalFormat.setRoundingMode(RoundingMode.HALF_UP);
+                            String formatedCost = decimalFormat.format(cost);
+                            showTotalCost.setText(formatedCost);
+                        }
+                    }
+                }
+            if(nameCount <= 0){
+            infoAlert.alertInfomation("Information Dialog", "There are no Items for " + animalName + " in the last 30 days");
+            }
+        }catch(NullPointerException e){
+                    infoAlert.alertInfomation("Information Dialog", "Please select an Animal or All.");
         }
     }
 
@@ -152,28 +196,60 @@ public class MedicationReportController implements Initializable {
      */
     @FXML
     public void onAction90Days(ActionEvent event) throws ParseException, SQLException {
-        
         double cost = 0.00;
+        int nameCount = 0;
         
-        ObservableList<Medication> filteredVisits = FXCollections.observableArrayList();
+        ObservableList<Medication> filteredItems = FXCollections.observableArrayList();
         Calendar currentDate = dates.currentDateFinder();
         Calendar minus90Days = dates.minus90DaysDateFinder();
+        String animalName = comboAnimal.getValue();
         
-        for(Medication med : MedicationQueries.getAllMeds()){
-            String purchaseDate = med.getDateOfPurchase();
-            Date datePurchased = new SimpleDateFormat("MM-dd-yyyy", Locale.ENGLISH).parse(purchaseDate);
-            Calendar dateBought = Calendar.getInstance();
-            dateBought.setTime(datePurchased);
-            
-            if(dateBought.after(minus90Days) && dateBought.before(currentDate)){
-                filteredVisits.add(med);
-                cost += med.getCost();
+        try{
+            if(animalName.equalsIgnoreCase("All") || animalName.isBlank() || animalName.isEmpty()) {
+                for(Medication item : MedicationQueries.getAllMeds()){
+                    String purchaseDate = item.getDateOfPurchase();
+                    Date datePurchased = new SimpleDateFormat("MM-dd-yyyy", Locale.ENGLISH).parse(purchaseDate);
+                    Calendar dateBought = Calendar.getInstance();
+                    dateBought.setTime(datePurchased);
+
+                    if(dateBought.after(minus90Days) && dateBought.before(currentDate)){
+                        filteredItems.add(item);
+                        cost += item.getCost();
+                        nameCount += 1;
+                    }
+                    tableDisplay.setItems(filteredItems);
+                    DecimalFormat decimalFormat = new DecimalFormat("#,###.##");
+                    decimalFormat.setRoundingMode(RoundingMode.HALF_UP);
+                    String formatedCost = decimalFormat.format(cost);
+                    showTotalCost.setText(formatedCost);
+                }
             }
-            tableDisplay.setItems(filteredVisits);
-            DecimalFormat df = new DecimalFormat("#,###.##");
-            df.setRoundingMode(RoundingMode.HALF_UP);
-            String rounded = df.format(cost);
-            showTotalCost.setText(rounded);
+            else{
+                for(Medication item : MedicationQueries.getAllMeds()){
+                        if(item.getAnimalFor().equalsIgnoreCase(animalName)){
+                            String purchaseDate = item.getDateOfPurchase();
+                            Date datePurchased = new SimpleDateFormat("MM-dd-yyyy", Locale.ENGLISH).parse(purchaseDate);
+                            Calendar dateBought = Calendar.getInstance();
+                            dateBought.setTime(datePurchased);
+
+                            if(dateBought.after(minus90Days) && dateBought.before(currentDate) && animalName.equalsIgnoreCase(item.getAnimalFor())){
+                                filteredItems.add(item);
+                                cost += item.getCost();
+                                nameCount += 1;
+                            }
+                            tableDisplay.setItems(filteredItems);
+                            DecimalFormat decimalFormat = new DecimalFormat("#,###.##");
+                            decimalFormat.setRoundingMode(RoundingMode.HALF_UP);
+                            String formatedCost = decimalFormat.format(cost);
+                            showTotalCost.setText(formatedCost);
+                        }
+                    }
+                }
+            if(nameCount <= 0){
+            infoAlert.alertInfomation("Information Dialog", "There are no Items for " + animalName + " in the last 90 days");
+            }
+        }catch(NullPointerException e){
+                    infoAlert.alertInfomation("Information Dialog", "Please select an Animal or All.");
         }
     }
 
@@ -187,34 +263,72 @@ public class MedicationReportController implements Initializable {
     public void onActionSpring(ActionEvent event) throws ParseException, SQLException {
         
         double cost = 0.00;
-        int selectedYear = 0;
+        int nameCount = 0;
         
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd-yyyy");
         ObservableList<Medication> filteredItems = FXCollections.observableArrayList();
+        String animalName = comboAnimal.getValue();
         
         try{
-            selectedYear = selectYear();
-        }catch(NullPointerException e){
+            String yearSelected = comboYear.getValue();
+            selectedYear = Integer.parseInt(yearSelected);
+        }catch(NumberFormatException ex){
             infoAlert.alertInfomation("Information Dialog", "Please select which year you want.");
         }
         
-        for(Medication med : MedicationQueries.getAllMeds()){
-            String serviceDate = med.getDateOfPurchase();
-            LocalDate getDate = LocalDate.parse(serviceDate, formatter);
-            int monthNumber = getDate.getMonthValue();
-            int yearNumber = getDate.getYear();
+        try{
+            if(animalName.equalsIgnoreCase("All")){
+                for(Medication item : MedicationQueries.getAllMeds()){
+                    String serviceDate = item.getDateOfPurchase();
+                    LocalDate getDate = LocalDate.parse(serviceDate, formatter);
+                    int monthNumber = getDate.getMonthValue();
+                    int yearNumber = getDate.getYear();
 
-            if((monthNumber == 3 || monthNumber == 4 || monthNumber == 5) && selectedYear == yearNumber){
-                filteredItems.add(med);
-                cost += med.getCost();
+                    if(selectedYear == yearNumber){
+                        if(monthNumber == 3 || monthNumber == 4 || monthNumber == 5){
+                            filteredItems.add(item);
+                            cost += item.getCost();
+                            nameCount += 1;
+                        }
+                        tableDisplay.setItems(filteredItems);
+                        DecimalFormat decimalFormat = new DecimalFormat("#,###.##");
+                        decimalFormat.setRoundingMode(RoundingMode.HALF_UP);
+                        String formatedCost = decimalFormat.format(cost);
+                        showTotalCost.setText(formatedCost);
+                    }
+                }
             }
-            tableDisplay.setItems(filteredItems);
-            DecimalFormat decimalFormat = new DecimalFormat("#,###.##");
-            decimalFormat.setRoundingMode(RoundingMode.HALF_UP);
-            String formatedCost = decimalFormat.format(cost);
-            showTotalCost.setText(formatedCost);
+            else{
+                for(Medication item : MedicationQueries.getAllMeds()){
+                    if(item.getAnimalFor().equalsIgnoreCase(animalName)){
+                        String serviceDate = item.getDateOfPurchase();
+                        LocalDate getDate = LocalDate.parse(serviceDate, formatter);
+                        int monthNumber = getDate.getMonthValue();
+                        int yearNumber = getDate.getYear();
+
+                        if(selectedYear == yearNumber){
+                            if(monthNumber == 3 || monthNumber == 4 || monthNumber == 5){
+                                filteredItems.add(item);
+                                cost += item.getCost();
+                                nameCount += 1;
+                            }
+                            tableDisplay.setItems(filteredItems);
+                            DecimalFormat decimalFormat = new DecimalFormat("#,###.##");
+                            decimalFormat.setRoundingMode(RoundingMode.HALF_UP);
+                            String formatedCost = decimalFormat.format(cost);
+                            showTotalCost.setText(formatedCost);
+                        }
+                    }
+                }
+            }
+            if(nameCount <= 0){
+                infoAlert.alertInfomation("Information Dialog", "There are no Items for " + animalName + "\nfor the Spring months of the year " + selectedYear);
+            }
+        }catch(NullPointerException e){
+            infoAlert.alertInfomation("Information Dialog", "Please select an Animal or All.");
         }
     }
+
 
     /**
      * Filters out all the medications that are in the Spring months of June, July, August of the selected current or last year and displays them.
@@ -226,32 +340,69 @@ public class MedicationReportController implements Initializable {
     public void onActionSummer(ActionEvent event) throws ParseException, SQLException {
         
         double cost = 0.00;
-        int selectedYear = 0;
+        int nameCount = 0;
         
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd-yyyy");
         ObservableList<Medication> filteredItems = FXCollections.observableArrayList();
+        String animalName = comboAnimal.getValue();
         
         try{
-            selectedYear = selectYear();
-        }catch(NullPointerException e){
+            String yearSelected = comboYear.getValue();
+            selectedYear = Integer.parseInt(yearSelected);
+        }catch(NumberFormatException ex){
             infoAlert.alertInfomation("Information Dialog", "Please select which year you want.");
         }
         
-        for(Medication med : MedicationQueries.getAllMeds()){
-            String serviceDate = med.getDateOfPurchase();
-            LocalDate getDate = LocalDate.parse(serviceDate, formatter);
-            int monthNumber = getDate.getMonthValue();
-            int yearNumber = getDate.getYear();
+        try{
+            if(animalName.equalsIgnoreCase("All")){
+                for(Medication item : MedicationQueries.getAllMeds()){
+                    String serviceDate = item.getDateOfPurchase();
+                    LocalDate getDate = LocalDate.parse(serviceDate, formatter);
+                    int monthNumber = getDate.getMonthValue();
+                    int yearNumber = getDate.getYear();
 
-            if((monthNumber == 6 || monthNumber == 7 || monthNumber == 8) && selectedYear == yearNumber){
-                filteredItems.add(med);
-                cost += med.getCost();
+                    if(selectedYear == yearNumber){
+                        if(monthNumber == 6 || monthNumber ==7 || monthNumber == 8){
+                            filteredItems.add(item);
+                            cost += item.getCost();
+                            nameCount += 1;
+                        }
+                        tableDisplay.setItems(filteredItems);
+                        DecimalFormat decimalFormat = new DecimalFormat("#,###.##");
+                        decimalFormat.setRoundingMode(RoundingMode.HALF_UP);
+                        String formatedCost = decimalFormat.format(cost);
+                        showTotalCost.setText(formatedCost);
+                    }
+                }
             }
-            tableDisplay.setItems(filteredItems);
-            DecimalFormat decimalFormat = new DecimalFormat("#,###.##");
-            decimalFormat.setRoundingMode(RoundingMode.HALF_UP);
-            String formatedCost = decimalFormat.format(cost);
-            showTotalCost.setText(formatedCost);
+            else{
+                for(Medication item : MedicationQueries.getAllMeds()){
+                    if(item.getAnimalFor().equalsIgnoreCase(animalName)){
+                        String serviceDate = item.getDateOfPurchase();
+                        LocalDate getDate = LocalDate.parse(serviceDate, formatter);
+                        int monthNumber = getDate.getMonthValue();
+                        int yearNumber = getDate.getYear();
+
+                        if(selectedYear == yearNumber){
+                            if(monthNumber == 6 || monthNumber == 7 || monthNumber == 8){
+                                filteredItems.add(item);
+                                cost += item.getCost();
+                                nameCount += 1;
+                            }
+                            tableDisplay.setItems(filteredItems);
+                            DecimalFormat decimalFormat = new DecimalFormat("#,###.##");
+                            decimalFormat.setRoundingMode(RoundingMode.HALF_UP);
+                            String formatedCost = decimalFormat.format(cost);
+                            showTotalCost.setText(formatedCost);
+                        }
+                    }
+                }
+            }
+            if(nameCount <= 0){
+                infoAlert.alertInfomation("Information Dialog", "There are no Items for " + animalName + "\nfor the Summer months of the year " + selectedYear);
+            }
+        }catch(NullPointerException e){
+            infoAlert.alertInfomation("Information Dialog", "Please select an Animal or All.");
         }
     }
     
@@ -265,32 +416,69 @@ public class MedicationReportController implements Initializable {
     public void onActionFall(ActionEvent event) throws ParseException, SQLException {
         
         double cost = 0.00;
-        int selectedYear = 0;
+        int nameCount = 0;
         
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd-yyyy");
         ObservableList<Medication> filteredItems = FXCollections.observableArrayList();
+        String animalName = comboAnimal.getValue();
         
         try{
-            selectedYear = selectYear();
-        }catch(NullPointerException e){
+            String yearSelected = comboYear.getValue();
+            selectedYear = Integer.parseInt(yearSelected);
+        }catch(NumberFormatException ex){
             infoAlert.alertInfomation("Information Dialog", "Please select which year you want.");
         }
         
-        for(Medication med : MedicationQueries.getAllMeds()){
-            String serviceDate = med.getDateOfPurchase();
-            LocalDate getDate = LocalDate.parse(serviceDate, formatter);
-            int monthNumber = getDate.getMonthValue();
-            int yearNumber = getDate.getYear();
+        try{
+            if(animalName.equalsIgnoreCase("All")){
+                for(Medication item : MedicationQueries.getAllMeds()){
+                    String serviceDate = item.getDateOfPurchase();
+                    LocalDate getDate = LocalDate.parse(serviceDate, formatter);
+                    int monthNumber = getDate.getMonthValue();
+                    int yearNumber = getDate.getYear();
 
-            if((monthNumber == 9 || monthNumber == 10 || monthNumber == 11) && selectedYear == yearNumber){
-                filteredItems.add(med);
-                cost += med.getCost();
+                    if(selectedYear == yearNumber){
+                        if(monthNumber == 9 || monthNumber == 10 || monthNumber == 11){
+                            filteredItems.add(item);
+                            cost += item.getCost();
+                            nameCount += 1;
+                        }
+                        tableDisplay.setItems(filteredItems);
+                        DecimalFormat decimalFormat = new DecimalFormat("#,###.##");
+                        decimalFormat.setRoundingMode(RoundingMode.HALF_UP);
+                        String formatedCost = decimalFormat.format(cost);
+                        showTotalCost.setText(formatedCost);
+                    }
+                }
             }
-            tableDisplay.setItems(filteredItems);
-            DecimalFormat decimalFormat = new DecimalFormat("#,###.##");
-            decimalFormat.setRoundingMode(RoundingMode.HALF_UP);
-            String formatedCost = decimalFormat.format(cost);
-            showTotalCost.setText(formatedCost);
+            else{
+                for(Medication item : MedicationQueries.getAllMeds()){
+                    if(item.getAnimalFor().equalsIgnoreCase(animalName)){
+                        String serviceDate = item.getDateOfPurchase();
+                        LocalDate getDate = LocalDate.parse(serviceDate, formatter);
+                        int monthNumber = getDate.getMonthValue();
+                        int yearNumber = getDate.getYear();
+
+                        if(selectedYear == yearNumber){
+                            if(monthNumber == 9 || monthNumber == 10 || monthNumber == 11){
+                                filteredItems.add(item);
+                                cost += item.getCost();
+                                nameCount += 1;
+                            }
+                            tableDisplay.setItems(filteredItems);
+                            DecimalFormat decimalFormat = new DecimalFormat("#,###.##");
+                            decimalFormat.setRoundingMode(RoundingMode.HALF_UP);
+                            String formatedCost = decimalFormat.format(cost);
+                            showTotalCost.setText(formatedCost);
+                        }
+                    }
+                }
+            }
+            if(nameCount <= 0){
+                infoAlert.alertInfomation("Information Dialog", "There are no Items for " + animalName + "\nfor the Fall months of the year " + selectedYear);
+            }
+        }catch(NullPointerException e){
+            infoAlert.alertInfomation("Information Dialog", "Please select an Animal or All.");
         }
     }
 
@@ -304,39 +492,83 @@ public class MedicationReportController implements Initializable {
     public void onActionWinter(ActionEvent event) throws ParseException, SQLException {
         
         double cost = 0.00;
-        int selectedYear = 0;
+        int nameCount = 0;
+        
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd-yyyy");
         ObservableList<Medication> filteredItems = FXCollections.observableArrayList();
+        String animalName = comboAnimal.getValue();
         
         try{
-            selectedYear = selectYear();
-        }catch(NullPointerException e){
+            String yearSelected = comboYear.getValue();
+            selectedYear = Integer.parseInt(yearSelected);
+        }catch(NumberFormatException ex){
             infoAlert.alertInfomation("Information Dialog", "Please select which year you want.");
         }
         
-        for(Medication med : MedicationQueries.getAllMeds()){
-            String serviceDate = med.getDateOfPurchase();
-            LocalDate getDate = LocalDate.parse(serviceDate, formatter);
-            int monthNumber = getDate.getMonthValue();
-            int yearNumber = getDate.getYear();
+        try{
+            if(animalName.equalsIgnoreCase("All")){
+                for(Medication item : MedicationQueries.getAllMeds()){
+                    String serviceDate = item.getDateOfPurchase();
+                    LocalDate getDate = LocalDate.parse(serviceDate, formatter);
+                    int monthNumber = getDate.getMonthValue();
+                    int yearNumber = getDate.getYear();
 
-            if(monthNumber == 12) {
-                if(selectedYear == yearNumber){
-                    filteredItems.add(med);
-                    cost += med.getCost();
+                    if(selectedYear - 1 == yearNumber){
+                        if(monthNumber == 12){
+                            filteredItems.add(item);
+                            cost += item.getCost();
+                            nameCount += 1;
+                        }
+                    }
+                    if(selectedYear == yearNumber){
+                        if(monthNumber == 1 || monthNumber == 2){
+                            filteredItems.add(item);
+                            cost += item.getCost();
+                            nameCount += 1;
+                        }
+                        tableDisplay.setItems(filteredItems);
+                        DecimalFormat decimalFormat = new DecimalFormat("#,###.##");
+                        decimalFormat.setRoundingMode(RoundingMode.HALF_UP);
+                        String formatedCost = decimalFormat.format(cost);
+                        showTotalCost.setText(formatedCost);
+                    }
                 }
             }
-            if(monthNumber == 1 || monthNumber == 2) {
-                if(selectedYear == yearNumber){
-                    filteredItems.add(med);
-                    cost += med.getCost();
+            else{
+                for(Medication item : MedicationQueries.getAllMeds()){
+                    if(item.getAnimalFor().equalsIgnoreCase(animalName)){
+                        String serviceDate = item.getDateOfPurchase();
+                        LocalDate getDate = LocalDate.parse(serviceDate, formatter);
+                        int monthNumber = getDate.getMonthValue();
+                        int yearNumber = getDate.getYear();
+                        
+                        if(selectedYear - 1 == yearNumber){
+                            if(monthNumber == 12){
+                                filteredItems.add(item);
+                                cost += item.getCost();
+                                nameCount += 1;
+                            }
+                        }
+                        if(selectedYear == yearNumber){
+                            if(monthNumber == 1 || monthNumber == 2){
+                                filteredItems.add(item);
+                                cost += item.getCost();
+                                nameCount += 1;
+                            }
+                            tableDisplay.setItems(filteredItems);
+                            DecimalFormat decimalFormat = new DecimalFormat("#,###.##");
+                            decimalFormat.setRoundingMode(RoundingMode.HALF_UP);
+                            String formatedCost = decimalFormat.format(cost);
+                            showTotalCost.setText(formatedCost);
+                        }
+                    }
                 }
             }
-            tableDisplay.setItems(filteredItems);
-            DecimalFormat decimalFormat = new DecimalFormat("#,###.##");
-            decimalFormat.setRoundingMode(RoundingMode.HALF_UP);
-            String formatedCost = decimalFormat.format(cost);
-            showTotalCost.setText(formatedCost);
+            if(nameCount <= 0){
+                infoAlert.alertInfomation("Information Dialog", "There are no Items for " + animalName + "\nfor the Winter months of the year " + selectedYear);
+            }
+        }catch(NullPointerException e){
+            infoAlert.alertInfomation("Information Dialog", "Please select an Animal or All.");
         }
     }
     
@@ -380,29 +612,25 @@ public class MedicationReportController implements Initializable {
     
     /**
      * Fills the array list with the list of years, then loads the combo box with the list.
+     * @throws java.sql.SQLException
+     * @throws java.text.ParseException
      */
-    public void fillComboYeare(){
-        yearList.addAll("Current Year", "Last Year");
+    public void fillComboYeare() throws SQLException, ParseException{
+        String sql = "Select distinct year FROM medication;";
+        PreparedStatement ps = JDBC.connection.prepareStatement(sql);
+        ResultSet rs = ps.executeQuery();
+        
+        while(rs.next()){
+            String year = (rs.getString("year"));
+            
+            yearList.add(year);
+        }
         comboYear.setItems(yearList);
     }
     
-    /**
-     * Gets the selected year, and returns that years number.
-     * @return The year as an int.
-     * @throws ParseException 
-     */
-    public int selectYear() throws ParseException{
-        int selectedYear = 2000;
-        
-        if(comboYear.getValue().equalsIgnoreCase("Current Year")){
-            Calendar year = dates.currentDateFinder();
-            selectedYear = year.get(Calendar.YEAR);
-        }
-        else if(comboYear.getValue().equalsIgnoreCase("Last Year")){
-            Calendar year = dates.currentDateFinder();
-            selectedYear = year.get(Calendar.YEAR) - 1;
-        }
-        return selectedYear;
+    public void fillComboAnimal() throws SQLException{
+        animalNameList = AnimalQueries.getAllAnimalNames();
+        comboAnimal.setItems(animalNameList);
     }
     
     /**

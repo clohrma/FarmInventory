@@ -34,7 +34,11 @@
         -fx-font-weight:  bold;
         -fx-font-size: 12pt;
     }
-        
+    
+    .comboAnimal{
+        -fx-font-size: 10pt;
+    }
+    
     .allBtn{
         -fx-font-size: 12pt;
     }

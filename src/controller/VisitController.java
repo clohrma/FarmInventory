@@ -137,8 +137,9 @@ public class VisitController implements Initializable{
                 LocalDate getDate = dateServiceDate.getValue();
                 String dateOfService = getDate.format(formatter);
                 double cost = Double.parseDouble(txtCost.getText());
+                String year = String.valueOf(getDate.getYear());
 
-                VisitQueries.insert(name, animalFor, dateOfService, type, cost, emergency, reason);
+                VisitQueries.insert(name, animalFor, dateOfService, type, cost, emergency, reason, year);
             }
             else{
                 String name = txtName.getText();
@@ -148,8 +149,9 @@ public class VisitController implements Initializable{
                 LocalDate getDate = dateServiceDate.getValue();
                 String dateOfService = getDate.format(formatter);
                 double cost = Double.parseDouble(txtCost.getText());
+                String year = String.valueOf(getDate.getYear());
 
-                VisitQueries.update(cuurentID, name, animalFor, dateOfService, type, cost, emergency, reason);
+                VisitQueries.update(cuurentID, name, animalFor, dateOfService, type, cost, emergency, reason, year);
             }
             clearFields();
             refreshVisitsTable();

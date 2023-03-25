@@ -68,7 +68,7 @@ public class AnimalQueries {
         return rowsAffected;
     }
     
-    public static ObservableList<Animal> getAllAnimals() throws SQLException{
+    public static ObservableList<Animal> getAllAnimals() throws SQLException {
         ObservableList<Animal> allAnimals = FXCollections.observableArrayList();
         
         String sql = "SELECT * FROM animal order by dateOfBirth DESC;";
@@ -90,6 +90,21 @@ public class AnimalQueries {
             allAnimals.add(newAnimal);
         }
         return allAnimals;
+    }
+    
+    public static ObservableList<String> getAllAnimalNames()throws SQLException {
+        ObservableList<String> allAnimalNames = FXCollections.observableArrayList();
+        allAnimalNames.add("All");
+        
+        String sql = "SELECT name FROM animal order by name;";
+        PreparedStatement ps = JDBC.connection.prepareStatement(sql);
+        ResultSet resultSet = ps.executeQuery();
+        
+        while(resultSet.next()){
+            String name = resultSet.getString("name");
+            allAnimalNames.add(name);
+        }
+        return allAnimalNames;
     }
     
     public static String dbToStringDate (String dbDate){

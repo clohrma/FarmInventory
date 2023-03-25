@@ -20,10 +20,10 @@ import model.Visit;
 public class VisitQueries {
     
 
-    public static int insert(String name, String animalFor, String dateOfService, String type, double cost, String emergency, String reason) throws SQLException {
+    public static int insert(String name, String animalFor, String dateOfService, String type, double cost, String emergency, String reason, String year) throws SQLException {
         
-        String sql = "INSERT INTO visit (name, animalFor, dateOfService, type, cost, emergency, reason) "
-                + "VALUES(?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO visit (name, animalFor, dateOfService, type, cost, emergency, reason, year) "
+                + "VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
         
         PreparedStatement ps = JDBC.connection.prepareStatement(sql);
         ps.setString(1, name);
@@ -33,14 +33,15 @@ public class VisitQueries {
         ps.setDouble(5, cost);
         ps.setString(6, emergency);
         ps.setString(7, reason);
+        ps.setString(8, year);
         
         int rowsAffected = ps.executeUpdate();
         return rowsAffected;
     }
     
-    public static int update(int visitID, String name, String animalFor, String dateOfService, String type, double cost, String emergency, String reason) throws SQLException {
+    public static int update(int visitID, String name, String animalFor, String dateOfService, String type, double cost, String emergency, String reason, String year) throws SQLException {
         
-    String sql = "UPDATE visit SET visitID = ?, name = ?, animalFor = ?, dateOfService = ?, type = ?, cost = ?, emergency = ?, reason = ? "
+    String sql = "UPDATE visit SET visitID = ?, name = ?, animalFor = ?, dateOfService = ?, type = ?, cost = ?, emergency = ?, reason = ?, year = ? "
                 + "WHERE (visitID = ?)";
     
         PreparedStatement ps = JDBC.connection.prepareStatement(sql);
@@ -52,7 +53,8 @@ public class VisitQueries {
         ps.setDouble(6, cost);
         ps.setString(7, emergency);
         ps.setString(8, reason);
-        ps.setInt(9, visitID);
+        ps.setString(9, year);
+        ps.setInt(10, visitID);
         
         int rowsAffected = ps.executeUpdate();
         return rowsAffected;
@@ -84,8 +86,9 @@ public class VisitQueries {
             String reason = resultSet.getString("reason");
             String type = resultSet.getString("type");
             String emergency = resultSet.getString("emergency");
+            String year = resultSet.getString("year");
             
-            Visit newVisit = new Visit(visitID, name, animalFor, dateOfService, type, cost, emergency, reason);
+            Visit newVisit = new Visit(visitID, name, animalFor, dateOfService, type, cost, emergency, reason, year);
             
             allVisits.add(newVisit);
         }

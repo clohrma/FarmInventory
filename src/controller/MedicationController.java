@@ -128,8 +128,9 @@ public class MedicationController implements Initializable {
                 LocalDate getDate = datePurchaseDate.getValue();
                 String dateOfPurchase = getDate.format(formatter);
                 double cost = Double.parseDouble(txtCost.getText());
+                String year = String.valueOf(getDate.getYear());
 
-                MedicationQueries.insert(name, animalFor, dateOfPurchase, cost, emergency, reason);
+                MedicationQueries.insert(name, animalFor, dateOfPurchase, cost, emergency, reason, year);
             }
             else{
                 String name = txtName.getText();
@@ -138,8 +139,9 @@ public class MedicationController implements Initializable {
                 LocalDate getDate = datePurchaseDate.getValue();
                 String dateOfPurchase = getDate.format(formatter);
                 double cost = Double.parseDouble(txtCost.getText());
+                String year = String.valueOf(getDate.getYear());
 
-                MedicationQueries.update(currentID, name, animalFor, dateOfPurchase, cost, emergency, reason);
+                MedicationQueries.update(currentID, name, animalFor, dateOfPurchase, cost, emergency, reason, year);
             }
             clearFields();
             refreshMedTable();
