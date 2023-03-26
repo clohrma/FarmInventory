@@ -114,7 +114,7 @@ public class MedicationReportController implements Initializable {
     }    
     
     /**
-     * Displays all the medication in the database, and shows the total of each item added up.
+     * Displays all the medication in the database, and shows the total of each medadded up.
      * @param event
      * @throws SQLException 
      */
@@ -141,15 +141,15 @@ public class MedicationReportController implements Initializable {
         
         try{
             if(animalName.equalsIgnoreCase("All") || animalName.isBlank() || animalName.isEmpty()) {
-                for(Medication item : MedicationQueries.getAllMeds()){
-                    String purchaseDate = item.getDateOfPurchase();
+                for(Medication med: MedicationQueries.getAllMeds()){
+                    String purchaseDate = med.getDateOfPurchase();
                     Date datePurchased = new SimpleDateFormat("MM-dd-yyyy", Locale.ENGLISH).parse(purchaseDate);
                     Calendar dateBought = Calendar.getInstance();
                     dateBought.setTime(datePurchased);
 
                     if(dateBought.after(minus30Days) && dateBought.before(currentDate)){
-                        filteredItems.add(item);
-                        cost += item.getCost();
+                        filteredItems.add(med);
+                        cost += med.getCost();
                         nameCount += 1;
                     }
                     tableDisplay.setItems(filteredItems);
@@ -160,16 +160,16 @@ public class MedicationReportController implements Initializable {
                 }
             }
             else{
-                for(Medication item : MedicationQueries.getAllMeds()){
-                        if(item.getAnimalFor().equalsIgnoreCase(animalName)){
-                            String purchaseDate = item.getDateOfPurchase();
+                for(Medication med: MedicationQueries.getAllMeds()){
+                        if(med.getAnimalFor().equalsIgnoreCase(animalName)){
+                            String purchaseDate = med.getDateOfPurchase();
                             Date datePurchased = new SimpleDateFormat("MM-dd-yyyy", Locale.ENGLISH).parse(purchaseDate);
                             Calendar dateBought = Calendar.getInstance();
                             dateBought.setTime(datePurchased);
 
-                            if(dateBought.after(minus30Days) && dateBought.before(currentDate) && animalName.equalsIgnoreCase(item.getAnimalFor())){
-                                filteredItems.add(item);
-                                cost += item.getCost();
+                            if(dateBought.after(minus30Days) && dateBought.before(currentDate) && animalName.equalsIgnoreCase(med.getAnimalFor())){
+                                filteredItems.add(med);
+                                cost += med.getCost();
                                 nameCount += 1;
                             }
                             tableDisplay.setItems(filteredItems);
@@ -206,15 +206,15 @@ public class MedicationReportController implements Initializable {
         
         try{
             if(animalName.equalsIgnoreCase("All") || animalName.isBlank() || animalName.isEmpty()) {
-                for(Medication item : MedicationQueries.getAllMeds()){
-                    String purchaseDate = item.getDateOfPurchase();
+                for(Medication med: MedicationQueries.getAllMeds()){
+                    String purchaseDate = med.getDateOfPurchase();
                     Date datePurchased = new SimpleDateFormat("MM-dd-yyyy", Locale.ENGLISH).parse(purchaseDate);
                     Calendar dateBought = Calendar.getInstance();
                     dateBought.setTime(datePurchased);
 
                     if(dateBought.after(minus90Days) && dateBought.before(currentDate)){
-                        filteredItems.add(item);
-                        cost += item.getCost();
+                        filteredItems.add(med);
+                        cost += med.getCost();
                         nameCount += 1;
                     }
                     tableDisplay.setItems(filteredItems);
@@ -225,16 +225,16 @@ public class MedicationReportController implements Initializable {
                 }
             }
             else{
-                for(Medication item : MedicationQueries.getAllMeds()){
-                        if(item.getAnimalFor().equalsIgnoreCase(animalName)){
-                            String purchaseDate = item.getDateOfPurchase();
+                for(Medication med: MedicationQueries.getAllMeds()){
+                        if(med.getAnimalFor().equalsIgnoreCase(animalName)){
+                            String purchaseDate = med.getDateOfPurchase();
                             Date datePurchased = new SimpleDateFormat("MM-dd-yyyy", Locale.ENGLISH).parse(purchaseDate);
                             Calendar dateBought = Calendar.getInstance();
                             dateBought.setTime(datePurchased);
 
-                            if(dateBought.after(minus90Days) && dateBought.before(currentDate) && animalName.equalsIgnoreCase(item.getAnimalFor())){
-                                filteredItems.add(item);
-                                cost += item.getCost();
+                            if(dateBought.after(minus90Days) && dateBought.before(currentDate) && animalName.equalsIgnoreCase(med.getAnimalFor())){
+                                filteredItems.add(med);
+                                cost += med.getCost();
                                 nameCount += 1;
                             }
                             tableDisplay.setItems(filteredItems);
@@ -278,16 +278,16 @@ public class MedicationReportController implements Initializable {
         
         try{
             if(animalName.equalsIgnoreCase("All")){
-                for(Medication item : MedicationQueries.getAllMeds()){
-                    String serviceDate = item.getDateOfPurchase();
+                for(Medication med: MedicationQueries.getAllMeds()){
+                    String serviceDate = med.getDateOfPurchase();
                     LocalDate getDate = LocalDate.parse(serviceDate, formatter);
                     int monthNumber = getDate.getMonthValue();
                     int yearNumber = getDate.getYear();
 
                     if(selectedYear == yearNumber){
                         if(monthNumber == 3 || monthNumber == 4 || monthNumber == 5){
-                            filteredItems.add(item);
-                            cost += item.getCost();
+                            filteredItems.add(med);
+                            cost += med.getCost();
                             nameCount += 1;
                         }
                         tableDisplay.setItems(filteredItems);
@@ -299,17 +299,17 @@ public class MedicationReportController implements Initializable {
                 }
             }
             else{
-                for(Medication item : MedicationQueries.getAllMeds()){
-                    if(item.getAnimalFor().equalsIgnoreCase(animalName)){
-                        String serviceDate = item.getDateOfPurchase();
+                for(Medication med: MedicationQueries.getAllMeds()){
+                    if(med.getAnimalFor().equalsIgnoreCase(animalName)){
+                        String serviceDate = med.getDateOfPurchase();
                         LocalDate getDate = LocalDate.parse(serviceDate, formatter);
                         int monthNumber = getDate.getMonthValue();
                         int yearNumber = getDate.getYear();
 
                         if(selectedYear == yearNumber){
                             if(monthNumber == 3 || monthNumber == 4 || monthNumber == 5){
-                                filteredItems.add(item);
-                                cost += item.getCost();
+                                filteredItems.add(med);
+                                cost += med.getCost();
                                 nameCount += 1;
                             }
                             tableDisplay.setItems(filteredItems);
@@ -355,16 +355,16 @@ public class MedicationReportController implements Initializable {
         
         try{
             if(animalName.equalsIgnoreCase("All")){
-                for(Medication item : MedicationQueries.getAllMeds()){
-                    String serviceDate = item.getDateOfPurchase();
+                for(Medication med: MedicationQueries.getAllMeds()){
+                    String serviceDate = med.getDateOfPurchase();
                     LocalDate getDate = LocalDate.parse(serviceDate, formatter);
                     int monthNumber = getDate.getMonthValue();
                     int yearNumber = getDate.getYear();
 
                     if(selectedYear == yearNumber){
                         if(monthNumber == 6 || monthNumber ==7 || monthNumber == 8){
-                            filteredItems.add(item);
-                            cost += item.getCost();
+                            filteredItems.add(med);
+                            cost += med.getCost();
                             nameCount += 1;
                         }
                         tableDisplay.setItems(filteredItems);
@@ -376,17 +376,17 @@ public class MedicationReportController implements Initializable {
                 }
             }
             else{
-                for(Medication item : MedicationQueries.getAllMeds()){
-                    if(item.getAnimalFor().equalsIgnoreCase(animalName)){
-                        String serviceDate = item.getDateOfPurchase();
+                for(Medication med: MedicationQueries.getAllMeds()){
+                    if(med.getAnimalFor().equalsIgnoreCase(animalName)){
+                        String serviceDate = med.getDateOfPurchase();
                         LocalDate getDate = LocalDate.parse(serviceDate, formatter);
                         int monthNumber = getDate.getMonthValue();
                         int yearNumber = getDate.getYear();
 
                         if(selectedYear == yearNumber){
                             if(monthNumber == 6 || monthNumber == 7 || monthNumber == 8){
-                                filteredItems.add(item);
-                                cost += item.getCost();
+                                filteredItems.add(med);
+                                cost += med.getCost();
                                 nameCount += 1;
                             }
                             tableDisplay.setItems(filteredItems);
@@ -431,16 +431,16 @@ public class MedicationReportController implements Initializable {
         
         try{
             if(animalName.equalsIgnoreCase("All")){
-                for(Medication item : MedicationQueries.getAllMeds()){
-                    String serviceDate = item.getDateOfPurchase();
+                for(Medication med: MedicationQueries.getAllMeds()){
+                    String serviceDate = med.getDateOfPurchase();
                     LocalDate getDate = LocalDate.parse(serviceDate, formatter);
                     int monthNumber = getDate.getMonthValue();
                     int yearNumber = getDate.getYear();
 
                     if(selectedYear == yearNumber){
                         if(monthNumber == 9 || monthNumber == 10 || monthNumber == 11){
-                            filteredItems.add(item);
-                            cost += item.getCost();
+                            filteredItems.add(med);
+                            cost += med.getCost();
                             nameCount += 1;
                         }
                         tableDisplay.setItems(filteredItems);
@@ -452,17 +452,17 @@ public class MedicationReportController implements Initializable {
                 }
             }
             else{
-                for(Medication item : MedicationQueries.getAllMeds()){
-                    if(item.getAnimalFor().equalsIgnoreCase(animalName)){
-                        String serviceDate = item.getDateOfPurchase();
+                for(Medication med: MedicationQueries.getAllMeds()){
+                    if(med.getAnimalFor().equalsIgnoreCase(animalName)){
+                        String serviceDate = med.getDateOfPurchase();
                         LocalDate getDate = LocalDate.parse(serviceDate, formatter);
                         int monthNumber = getDate.getMonthValue();
                         int yearNumber = getDate.getYear();
 
                         if(selectedYear == yearNumber){
                             if(monthNumber == 9 || monthNumber == 10 || monthNumber == 11){
-                                filteredItems.add(item);
-                                cost += item.getCost();
+                                filteredItems.add(med);
+                                cost += med.getCost();
                                 nameCount += 1;
                             }
                             tableDisplay.setItems(filteredItems);
@@ -507,23 +507,23 @@ public class MedicationReportController implements Initializable {
         
         try{
             if(animalName.equalsIgnoreCase("All")){
-                for(Medication item : MedicationQueries.getAllMeds()){
-                    String serviceDate = item.getDateOfPurchase();
+                for(Medication med: MedicationQueries.getAllMeds()){
+                    String serviceDate = med.getDateOfPurchase();
                     LocalDate getDate = LocalDate.parse(serviceDate, formatter);
                     int monthNumber = getDate.getMonthValue();
                     int yearNumber = getDate.getYear();
 
                     if(selectedYear - 1 == yearNumber){
                         if(monthNumber == 12){
-                            filteredItems.add(item);
-                            cost += item.getCost();
+                            filteredItems.add(med);
+                            cost += med.getCost();
                             nameCount += 1;
                         }
                     }
                     if(selectedYear == yearNumber){
                         if(monthNumber == 1 || monthNumber == 2){
-                            filteredItems.add(item);
-                            cost += item.getCost();
+                            filteredItems.add(med);
+                            cost += med.getCost();
                             nameCount += 1;
                         }
                         tableDisplay.setItems(filteredItems);
@@ -535,24 +535,24 @@ public class MedicationReportController implements Initializable {
                 }
             }
             else{
-                for(Medication item : MedicationQueries.getAllMeds()){
-                    if(item.getAnimalFor().equalsIgnoreCase(animalName)){
-                        String serviceDate = item.getDateOfPurchase();
+                for(Medication med: MedicationQueries.getAllMeds()){
+                    if(med.getAnimalFor().equalsIgnoreCase(animalName)){
+                        String serviceDate = med.getDateOfPurchase();
                         LocalDate getDate = LocalDate.parse(serviceDate, formatter);
                         int monthNumber = getDate.getMonthValue();
                         int yearNumber = getDate.getYear();
                         
                         if(selectedYear - 1 == yearNumber){
                             if(monthNumber == 12){
-                                filteredItems.add(item);
-                                cost += item.getCost();
+                                filteredItems.add(med);
+                                cost += med.getCost();
                                 nameCount += 1;
                             }
                         }
                         if(selectedYear == yearNumber){
                             if(monthNumber == 1 || monthNumber == 2){
-                                filteredItems.add(item);
-                                cost += item.getCost();
+                                filteredItems.add(med);
+                                cost += med.getCost();
                                 nameCount += 1;
                             }
                             tableDisplay.setItems(filteredItems);
