@@ -76,7 +76,7 @@
             <Button lineSpacing="15.0" mnemonicParsing="false" onAction="#onActionHome" prefHeight="30.0" prefWidth="130.0" styleClass="homedBtn" text="Home" GridPane.columnIndex="1" GridPane.rowIndex="1" />
             <Button mnemonicParsing="false" onAction="#onActionAdd" prefHeight="30.0" prefWidth="130.0" styleClass="addBtn" text="Add/Update" />
             <Button mnemonicParsing="false" onAction="#onActionDelete" prefHeight="30.0" prefWidth="130.0" styleClass="deleteBtn" text="Delete" GridPane.columnIndex="1" />
-            <Button mnemonicParsing="false" onAction="#onActionClearOther" prefHeight="30.0" prefWidth="130.0" styleClass="clearBtn" text="Clear" GridPane.rowIndex="1" />
+            <Button mnemonicParsing="false" onAction="#onActionClear" prefHeight="30.0" prefWidth="130.0" styleClass="clearBtn" text="Clear" GridPane.rowIndex="1" />
          </children>
       </GridPane>
       <TableView fx:id="tblvwDisplay" layoutX="305.0" layoutY="5.0" onMouseClicked="#onMouseClickRowHandler" prefHeight="420.0" prefWidth="490.0">
