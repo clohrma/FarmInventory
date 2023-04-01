@@ -177,7 +177,7 @@ public class AnimalController implements Initializable {
      * @param event  Stores the mouse event.
      */
     @FXML
-    public void onActionClearOther(ActionEvent event) {
+    public void onActionClear(ActionEvent event) {
         clearFields();
     }
 
