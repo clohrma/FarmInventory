@@ -483,10 +483,7 @@ public class ItemReportsController implements Initializable {
      * Filters out all the items that are of the fall months December, January, February of the selected current or last year, and displays them.
      * @param event
      * @throws ParseException
-     * @throws SQLException 
-     * 
-     * 
-    * 
+     * @throws SQLException
      */
     @FXML
     public void onActionWinter(ActionEvent event) throws ParseException, SQLException {
@@ -626,6 +623,10 @@ public class ItemReportsController implements Initializable {
         comboYear.setItems(yearList);
     }
     
+    /**
+     * Gets all the Animals names from the database and puts them in a list for the drop down menu.
+     * @throws SQLException 
+     */
     public void fillComboAnimal() throws SQLException{
         animalNameList = AnimalQueries.getAllAnimalNames();
         comboAnimal.setItems(animalNameList);

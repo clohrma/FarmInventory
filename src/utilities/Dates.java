@@ -37,6 +37,12 @@ public class Dates {
         return calendar;
     }
     
+    /**
+     * Converts the String data passed to it into a Calendar datatype.
+     * @param sentDate Date that is passed is from the DatePicker or the database.
+     * @return The Calendar date of the String date passed in correctly formatted.
+     * @throws ParseException 
+     */
     public Calendar convertDateToCalendar(LocalDate sentDate) throws ParseException{
         DateTimeFormatter formatDate = DateTimeFormatter.ofPattern("MM-dd-yyyy");
         

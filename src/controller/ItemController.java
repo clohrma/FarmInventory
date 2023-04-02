@@ -78,8 +78,6 @@ public class ItemController implements Initializable {
     
     /**
      * Initializes the controller class.
-     * @param url
-     * @param rb
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -268,11 +266,11 @@ public class ItemController implements Initializable {
     public void refreshItemsTable() throws SQLException{
         tableItemDisplay.setItems(ItemQueries.getAllItems());
     }
-    
+       
     /**
      * Takes the String version of the date, puts it in the order needed, converts it to a LocalDate version.
      * @param dbDate The String date from the database.
-     * @return 
+     * @return The date is returned in MM-dd-yyyy format
      */
     public LocalDate dbToDatePicker (String dbDate){
         DateTimeFormatter inputFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");

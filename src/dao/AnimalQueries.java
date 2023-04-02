@@ -68,6 +68,11 @@ public class AnimalQueries {
         return rowsAffected;
     }
     
+    /**
+     * Gets all the animals from the database.
+     * @return A list of all the animals in an ObservableList.
+     * @throws SQLException 
+     */
     public static ObservableList<Animal> getAllAnimals() throws SQLException {
         ObservableList<Animal> allAnimals = FXCollections.observableArrayList();
         
@@ -92,6 +97,11 @@ public class AnimalQueries {
         return allAnimals;
     }
     
+    /**
+     * Gets all the Animal names from the database.
+     * @return A list of all the animal names in an ObservableList.
+     * @throws SQLException 
+     */
     public static ObservableList<String> getAllAnimalNames()throws SQLException {
         ObservableList<String> allAnimalNames = FXCollections.observableArrayList();
         allAnimalNames.add("All");
@@ -107,6 +117,11 @@ public class AnimalQueries {
         return allAnimalNames;
     }
     
+    /**
+     * Takes the String version of the date, puts it in the order needed, converts it to a LocalDate version.
+     * @param dbDate The String date from the database.
+     * @return The date is returned in MM-dd-yyyy format
+     */
     public static String dbToStringDate (String dbDate){
         DateTimeFormatter inputFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         DateTimeFormatter outputFormat = DateTimeFormatter.ofPattern("MM-dd-yyyy");
@@ -116,6 +131,11 @@ public class AnimalQueries {
         return date;
     }
     
+    /**
+     * Takes the String version of the date, puts it in the order needed, converts it to a String for the database.
+     * @param dbDate The String date from the database.
+     * @return The date is returned in MM-dd-yyyy format
+     */
     public static String programToDatabase (String dbDate){
         DateTimeFormatter inputFormat = DateTimeFormatter.ofPattern("MM-dd-yyyy");
         DateTimeFormatter outputFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");

@@ -110,6 +110,7 @@ public class AnimalController implements Initializable {
      * Takes the entered data and creates a new Animal then adds it to the database or updates the new database with the new data.
      * @param event Stores the action event.
      * @throws SQLException  Throws SQL Exception.
+     * @throws java.text.ParseException
      */
     @FXML
     public void onActionAdd(ActionEvent event) throws SQLException, ParseException {
@@ -233,7 +234,7 @@ public class AnimalController implements Initializable {
     /**
      * Takes the String version of the date, puts it in the order needed, converts it to a LocalDate version.
      * @param dbDate The String date from the database.
-     * @return 
+     * @return The date is returned in MM-dd-yyyy format
      */
     public LocalDate dbToDatePicker (String dbDate){
         DateTimeFormatter inputFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");

@@ -65,6 +65,11 @@ public class ItemQueries {
         return rowsAffected;
     }
     
+    /**
+     * Gets all the items from the database.
+     * @return A list of all the items in an ObservableList.
+     * @throws SQLException 
+     */
     public static ObservableList<Item> getAllItems() throws SQLException{
         ObservableList<Item> allfoodSupplyItems = FXCollections.observableArrayList();
         
@@ -89,6 +94,11 @@ public class ItemQueries {
         return allfoodSupplyItems;
     }
     
+    /**
+     * Takes the String version of the date, puts it in the order needed, converts it to a LocalDate version.
+     * @param dbDate The String date from the database.
+     * @return The date is returned in MM-dd-yyyy format
+     */
     public static String dbToStringDate (String dbDate){
         DateTimeFormatter inputFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         DateTimeFormatter outputFormat = DateTimeFormatter.ofPattern("MM-dd-yyyy");
@@ -98,6 +108,11 @@ public class ItemQueries {
         return date;
     }
     
+    /**
+     * Takes the String version of the date, puts it in the order needed, converts it to a String for the database.
+     * @param dbDate The String date from the database.
+     * @return The date is returned in MM-dd-yyyy format
+     */
     public static String programToDatabase (String dbDate){
         DateTimeFormatter inputFormat = DateTimeFormatter.ofPattern("MM-dd-yyyy");
         DateTimeFormatter outputFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
