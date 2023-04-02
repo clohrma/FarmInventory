@@ -319,28 +319,30 @@ public class AnimalController implements Initializable {
         String error = "";
         
         if(type == null || type.length() == 0){
-            error += "\n\nType field is blank, please select a type.";
+            error += "\n\nType field is blank, please enter a type.";
         }
         
         if(breed == null || breed.length() == 0){
-            error += "\n\nBreed field is blank, please select a type.";
+            error += "\n\nBreed field is blank, please enter a breed.";
         }
         if(color == null || color.length() == 0){
-            error += "\n\nColor field is blank, please select a type.";
+            error += "\n\nColor field is blank, please enter a color.";
         }
         if(name == null || name.length() == 0){
-            error += "\n\nName field is blank, please select a type.";
+            error += "\n\nName field is blank, please enter a name.";
         }
         if(gender == null || gender.length() == 0){
-            error += "\n\nGender field is blank, please select a type.";
-        }
-        if(dateOfBirth == null){
-            error += "\n\nBirthdate field is blank, please select a type.";
+            error += "\n\nGender field is blank, please select a gender.";
         }
         
-        Calendar currentDate = dates.currentDateFinder();
-        if(currentDate.before(dateOfBirth)){
-            error += "\n\nThe date selected is in the future, please select another date.";
+        try{
+            Calendar currentDate = dates.currentDateFinder();
+            Calendar birthdate = dates.convertDateToCalendar(dateOfBirth);
+            if(currentDate.before(birthdate)){
+                error += "\n\nThe date selected is in the future, please select another date that is in the past.";
+            }
+        }catch(NullPointerException ex){
+            error += "\n\nBirthdate field is blank, please select a date.";
         }
         
         if(error.length() == 0){

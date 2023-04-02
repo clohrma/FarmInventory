@@ -318,25 +318,26 @@ public class MedicationController implements Initializable {
         }
         
         if(reason == null || reason.length() == 0){
-            error += "\n\nReaon field is blank, please select a type.";
+            error += "\n\nReaon field is blank, please enter a reason.";
         }
         if(cost == -1){
-            error += "\n\nCost field is 0.00 or blank, please select a type.";
+            error += "\n\nCost field is 0.00 or blank, please enter a cost.";
         }
         if(name == null || name.length() == 0){
-            error += "\n\nName field is blank, please select a type.";
+            error += "\n\nName field is blank, please enter a name.";
         }
         if(animalName == null || animalName.length() == 0){
-            error += "\n\nAnimal for field is blank, please select a type.";
-        }
-        if(purchaseDate == null){
-            error += "\n\nPurchase Date field is blank, please select a type.";
+            error += "\n\nAnimal for field is blank, please select an animal its for.";
         }
         
-        Calendar currentDate = dates.currentDateFinder();
-        Calendar purchaseDateCalendar = dates.convertDateToCalendar(purchaseDate);
-        if(currentDate.before(purchaseDateCalendar)){
-            error += "\n\nThe purchase date selected is in the future, please select current date or before.";
+        try{
+            Calendar currentDate = dates.currentDateFinder();
+            Calendar purchaseDateCalendar = dates.convertDateToCalendar(purchaseDate);
+            if(currentDate.before(purchaseDateCalendar)){
+                error += "\n\nThe purchase date selected is in the future, please select current date or before.";
+            }
+        }catch(NullPointerException ex){
+            error += "\n\nPurchase Date field is blank, please select a type.";
         }
         
         if(error.length() == 0){

@@ -345,29 +345,29 @@ public class VisitController implements Initializable{
         }
         
         if(reason == null || reason.length() == 0){
-            error += "\n\nReaon field is blank, please select a type.";
+            error += "\n\nReaon field is blank, please enter a reason.";
         }
 		
         if(cost == -1){
-            error += "\n\nCost field is blank, please select a type.";
+            error += "\n\nCost field is blank, please enter a cost.";
         }
 		
         if(name == null || name.length() == 0){
-            error += "\n\nName field is blank, please select a type.";
+            error += "\n\nName field is blank, please enter a name.";
         }
 		
         if(animalName == null || animalName.length() == 0){
-            error += "\n\nAnimal for field is blank, please select a type.";
+            error += "\n\nAnimal for field is blank, please select an animal its for.";
         }
-		
-        if(serviceDate == null){
-            error += "\n\nService Date field is blank, please select a type.";
-        }
-        
-        Calendar currentDate = dates.currentDateFinder();
-        Calendar purchaseDateCalendar = dates.convertDateToCalendar(serviceDate);
-        if(currentDate.before(purchaseDateCalendar)){
-            error += "\n\nThe purchase date selected is in the future, please select current date or before.";
+	
+        try{
+            Calendar currentDate = dates.currentDateFinder();
+            Calendar serviceDateCalendar = dates.convertDateToCalendar(serviceDate);
+            if(currentDate.before(serviceDateCalendar)){
+                error += "\n\nThe service date selected is in the future, please select current date or before.";
+            }
+        }catch(NullPointerException ex){
+            error += "\n\nService Date field is blank, please select a date.";
         }
         
         if(error.length() == 0){
