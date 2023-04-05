@@ -15,7 +15,7 @@ import javafx.stage.Stage;
  *
  * @author Craig Lohrman
  */
-public class farmiIventory extends Application{
+public class farminventory extends Application{
 
     /**
      * @param args the command line arguments
