@@ -318,7 +318,7 @@ public class ItemReportsController implements Initializable {
                     }
                 }
             }
-            if(nameCount <= 0 && selectedYear > 0){
+            if(nameCount == 0 && selectedYear != 0){
                 infoAlert.alertInfomation("Information Dialog", "There are no Items for " + animalName + "\nfor the Spring months of the year " + selectedYear);
             }
             
@@ -395,7 +395,7 @@ public class ItemReportsController implements Initializable {
                     }
                 }
             }
-            if(nameCount <= 0){
+            if(nameCount == 0 && selectedYear != 0){
                 infoAlert.alertInfomation("Information Dialog", "There are no Items for " + animalName + "\nfor the Summer months of the year " + selectedYear);
             }
         }catch(NullPointerException e){
@@ -471,7 +471,7 @@ public class ItemReportsController implements Initializable {
                     }
                 }
             }
-            if(nameCount <= 0){
+            if(nameCount == 0 && selectedYear != 0){
                 infoAlert.alertInfomation("Information Dialog", "There are no Items for " + animalName + "\nfor the Fall months of the year " + selectedYear);
             }
         }catch(NullPointerException e){
@@ -561,7 +561,7 @@ public class ItemReportsController implements Initializable {
                     }
                 }
             }
-            if(nameCount <= 0){
+            if(nameCount == 0 && selectedYear != 0){
                 infoAlert.alertInfomation("Information Dialog", "There are no Items for " + animalName + "\nfor the Winter months of the year " + selectedYear);
             }
         }catch(NullPointerException e){
