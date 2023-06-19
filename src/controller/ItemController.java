@@ -4,6 +4,7 @@
  */
 package controller;
 
+import dao.AnimalQueries;
 import dao.JDBC;
 import dao.ItemQueries;
 import java.io.IOException;
@@ -52,6 +53,7 @@ import utilities.Dates;
 public class ItemController implements Initializable {
 
     ObservableList<String> type = FXCollections.observableArrayList();
+    ObservableList<String> animalNameList = FXCollections.observableArrayList();
     int itemID = -1;
     Dates dates = new Dates();
     
@@ -195,13 +197,8 @@ public class ItemController implements Initializable {
      * @throws SQLException 
      */
     public void fillComboAnimalFor() throws SQLException{
-        
-        String sql = "SELECT name FROM animal";
-        PreparedStatement ps = JDBC.connection.prepareStatement(sql);
-        ResultSet rSet = ps.executeQuery();
-        while(rSet.next()){
-            comboAnimalFor.getItems().add(rSet.getString("name"));
-         }
+        animalNameList = AnimalQueries.getAllAnimalNames();
+        comboAnimalFor.setItems(animalNameList);
     }
     
     /**

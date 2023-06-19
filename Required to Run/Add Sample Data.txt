@@ -1,0 +1,140 @@
+INSERT INTO `farm_inventory`.`animal` (`name`, `dateOfBirth`, `gender`, `altered`, `breed`, `color`, `type`) 
+VALUES ('Winnie', '2018-04-25', 'Female', 'Yes', 'Corgi', 'Tri Color', 'Dog');
+
+INSERT INTO `farm_inventory`.`animal` (`name`, `dateOfBirth`, `gender`, `altered`, `breed`, `color`, `type`) 
+VALUES ('Ziggy', '2015-05-06', 'Male', 'Yes', 'Apple', 'White with Brown Spots', 'Horse');
+
+INSERT INTO `farm_inventory`.`animal` (`name`, `dateOfBirth`, `gender`, `altered`, `breed`, `color`, `type`) 
+VALUES ('Sonja', '2018-06-05', 'Female', 'No', 'Quarter', 'Red', 'Cat');
+
+INSERT INTO `farm_inventory`.`animal` (`name`, `dateOfBirth`, `gender`, `altered`, `breed`, `color`, `type`) 
+VALUES ('Nookie', '2020-04-19', 'Female', 'No', 'Horse', 'Brown', 'Donkey');
+
+INSERT INTO `farm_inventory`.`animal` (`name`, `dateOfBirth`, `gender`, `altered`, `breed`, `color`, `type`) 
+VALUES ('Juju', '2023-03-15', 'Female', 'Yes', 'Corgi', 'Red', 'Duck');
+
+
+
+
+INSERT INTO `farm_inventory`.`item` (`name`, `animalFor`, `dateOfPurchase`, `type`, `cost`, `reason`, `year`) 
+VALUES ('January', 'Sonja', '2023-01-05', 'Other', '25.36', 'Winter', 2023);
+
+INSERT INTO `farm_inventory`.`item` (`name`, `animalFor`, `dateOfPurchase`, `type`, `cost`, `reason`, `year`) 
+VALUES ('February', 'Ziggy', '2023-02-23', 'Other', '34.00', 'Winter', 2023);
+
+INSERT INTO `farm_inventory`.`item` (`name`, `animalFor`, `dateOfPurchase`, `type`, `cost`, `reason`, `year`) 
+VALUES ('March', 'Ziggy', '2023-03-15', 'Supply', '44.00', 'Spring', 2023);
+
+INSERT INTO `farm_inventory`.`item` (`name`, `animalFor`, `dateOfPurchase`, `type`, `cost`, `reason`, `year`) 
+VALUES ('April', 'Sonja', '2022-04-13', 'Supply', '34.00', 'Spring', 2022);
+
+INSERT INTO `farm_inventory`.`item` (`name`, `animalFor`, `dateOfPurchase`, `type`, `cost`, `reason`, `year`) 
+VALUES ('May', 'Sonja', '2022-05-11', 'Food', '3.00', 'Spring', 2022);
+
+INSERT INTO `farm_inventory`.`item` (`name`, `animalFor`, `dateOfPurchase`, `type`, `cost`, `reason`, `year`) 
+VALUES ('June', 'Sonja', '2022-06-30', 'Supply', '4.00', 'Summer', 2022);
+
+INSERT INTO `farm_inventory`.`item` (`name`, `animalFor`, `dateOfPurchase`, `type`, `cost`, `reason`, `year`) 
+VALUES ('July', 'Sonja', '2022-07-19', 'Supply', '4.00', 'Summer', 2022);
+
+INSERT INTO `farm_inventory`.`item` (`name`, `animalFor`, `dateOfPurchase`, `type`, `cost`, `reason`, `year`) 
+VALUES ('August', 'Sonja', '2022-08-23', 'Other', '2.00', 'Summer', 2022);
+
+INSERT INTO `farm_inventory`.`item` (`name`, `animalFor`, `dateOfPurchase`, `type`, `cost`, `reason`, `year`) 
+VALUES ('September', 'Sonja', '2022-09-21', 'Other', '5.00', 'Fall', 2022);
+
+INSERT INTO `farm_inventory`.`item` (`name`, `animalFor`, `dateOfPurchase`, `type`, `cost`, `reason`, `year`) 
+VALUES ('October', 'Ziggy', '2022-10-13', 'Supply', '6.00', 'Fall', 2022);
+
+INSERT INTO `farm_inventory`.`item` (`name`, `animalFor`, `dateOfPurchase`, `type`, `cost`, `reason`, `year`) 
+VALUES ('November', 'Ziggy', '2022-11-22', 'Supply', '26.00', 'Fall', 2022);
+
+INSERT INTO `farm_inventory`.`item` (`name`, `animalFor`, `dateOfPurchase`, `type`, `cost`, `reason`, `year`) 
+VALUES ('December', 'Ziggy', '2022-12-14', 'Supply', '34.00	', 'Winter', 2022);
+
+
+
+
+
+INSERT INTO `farm_inventory`.`medication` (`name`, `animalFor`, `dateOfPurchase`, `cost`, `emergency`, `reason`, `year`) 
+VALUES ('Janruary', 'Nookie', '2022-01-13', '23.00', 'Yes', 'Winter', 2023);
+
+INSERT INTO `farm_inventory`.`medication` (`name`, `animalFor`, `dateOfPurchase`, `cost`, `emergency`, `reason`, `year`) 
+VALUES ('February', 'Ziggy', '2023-02-23', '4.00', 'No', 'Winter', 2023);
+
+INSERT INTO `farm_inventory`.`medication` (`name`, `animalFor`, `dateOfPurchase`, `cost`, `emergency`, `reason`, `year`) 
+VALUES ('March', 'Sonja', '2022-03-22', '4.00', 'No', 'Spring', 2022);
+
+INSERT INTO `farm_inventory`.`medication` (`name`, `animalFor`, `dateOfPurchase`, `cost`, `emergency`, `reason`, `year`) 
+VALUES ('April', 'Nookie', '2022-04-19', '7.00', 'No', 'Spring', 2022);
+
+INSERT INTO `farm_inventory`.`medication` (`name`, `animalFor`, `dateOfPurchase`, `cost`, `emergency`, `reason`, `year`) 
+VALUES ('May', 'Sonja', '2022-05-20', '7.00', 'No', 'Spring', 2022);
+
+INSERT INTO `farm_inventory`.`medication` (`name`, `animalFor`, `dateOfPurchase`, `cost`, `emergency`, `reason`, `year`) 
+VALUES ('June', 'Sonja', '2022-06-24', '9.00', 'No', 'Summer', 2022);
+
+INSERT INTO `farm_inventory`.`medication` (`name`, `animalFor`, `dateOfPurchase`, `cost`, `emergency`, `reason`, `year`) 
+VALUES ('July', 'Ziggy', '2022-07-23', '4.00', 'No', 'Summer', 2022);
+
+INSERT INTO `farm_inventory`.`medication` (`name`, `animalFor`, `dateOfPurchase`, `cost`, `emergency`, `reason`, `year`) 
+VALUES ('August', 'Sonja', '2022-08-07', '8.00', 'Yes', 'Summer', 2022);
+
+INSERT INTO `farm_inventory`.`medication` (`name`, `animalFor`, `dateOfPurchase`, `cost`, `emergency`, `reason`, `year`) 
+VALUES ('September', 'Ziggy', '2022-09-20', '7.00', 'No', 'Fall', 2022);
+
+INSERT INTO `farm_inventory`.`medication` (`name`, `animalFor`, `dateOfPurchase`, `cost`, `emergency`, `reason`, `year`) 
+VALUES ('October', 'Sonja', '2022-10-15', '3.00', 'No', 'Fall', 2022);
+
+INSERT INTO `farm_inventory`.`medication` (`name`, `animalFor`, `dateOfPurchase`, `cost`, `emergency`, `reason`, `year`) 
+VALUES ('November', 'Sonja', '2022-11-21', '3.00', 'No', 'Fall', 2022);
+
+INSERT INTO `farm_inventory`.`medication` (`name`, `animalFor`, `dateOfPurchase`, `cost`, `emergency`, `reason`, `year`) 
+VALUES ('December', 'Sonja', '2022-12-13', '25.00', 'No', 'Winter', 2022);
+
+
+
+
+INSERT INTO `farm_inventory`.`visit` (`name`, `animalFor`, `dateOfService`, `type`, `cost`, `emergency`, `reason`, `year`) 
+VALUES ('Janruary', 'Ziggy', '2023-01-11', 'Farrier', '4.00', 'No', 'Winter', 2023);
+
+INSERT INTO `farm_inventory`.`visit` (`name`, `animalFor`, `dateOfService`, `type`, `cost`, `emergency`, `reason`, `year`) 
+VALUES ('February', 'Sonja', '2023-02-22', 'Other', '543.00', 'Yes', 'Winter', 2023);
+
+INSERT INTO `farm_inventory`.`visit` (`name`, `animalFor`, `dateOfService`, `type`, `cost`, `emergency`, `reason`, `year`) 
+VALUES ('March', 'Sonja', '2023-03-14', 'Veterinarian', '3.00', 'Yes', 'Spring', 2023);
+
+INSERT INTO `farm_inventory`.`visit` (`name`, `animalFor`, `dateOfService`, `type`, `cost`, `emergency`, `reason`, `year`) 
+VALUES ('April', 'Juju', '2022-04-19', 'Veterinarian', '34.00', 'No', 'Spring', 2022);
+
+INSERT INTO `farm_inventory`.`visit` (`name`, `animalFor`, `dateOfService`, `type`, `cost`, `emergency`, `reason`, `year`) 
+VALUES ('May', 'Ziggy', '2022-05-25', 'Farrier', '3.00', 'No', 'Spring', 2022);
+
+INSERT INTO `farm_inventory`.`visit` (`name`, `animalFor`, `dateOfService`, `type`, `cost`, `emergency`, `reason`, `year`) 
+VALUES ('June', 'Sonja', '2022-06-22', 'Veterinarian', '43.00', 'No', 'Summer', 2022);
+
+INSERT INTO `farm_inventory`.`visit` (`name`, `animalFor`, `dateOfService`, `type`, `cost`, `emergency`, `reason`, `year`) 
+VALUES ('July', 'Nookie', '2022-07-28', 'Veterinarian', '3.00', 'No', 'Summer', 2022);
+
+INSERT INTO `farm_inventory`.`visit` (`name`, `animalFor`, `dateOfService`, `type`, `cost`, `emergency`, `reason`, `year`) 
+VALUES ('August', 'Sonja', '2022-08-17', 'Veterinarian', '3.00', 'No', 'Summer', 2022);
+
+INSERT INTO `farm_inventory`.`visit` (`name`, `animalFor`, `dateOfService`, `type`, `cost`, `emergency`, `reason`, `year`) 
+VALUES ('September', 'Nookie', '2022-09-14', 'Other', '54.00', 'No', 'Fall', 2022);
+
+INSERT INTO `farm_inventory`.`visit` (`name`, `animalFor`, `dateOfService`, `type`, `cost`, `emergency`, `reason`, `year`) 
+VALUES ('October', 'Nookie', '2022-10-17', 'Other', '33.00', 'No', 'Fall', 2022);
+
+INSERT INTO `farm_inventory`.`visit` (`name`, `animalFor`, `dateOfService`, `type`, `cost`, `emergency`, `reason`, `year`) 
+VALUES ('November', 'Sonja', '2022-11-23', 'Other', '3.00', 'No', 'Fall', 2022);
+
+INSERT INTO `farm_inventory`.`visit` (`name`, `animalFor`, `dateOfService`, `type`, `cost`, `emergency`, `reason`, `year`) 
+VALUES ('December', 'Sonja', '2022-12-21',	'Other',	23.00,	'No', 'Winter', 2022);
+
+
+
+INSERT INTO `farm_inventory`.`user` (`userName`, `uesrPassword`) 
+VALUES ('test', 'Test!');
+
+INSERT INTO `farm_inventory`.`user` (`userName`, `uesrPassword`) 
+VALUES ('admin', 'Passw0rd!');

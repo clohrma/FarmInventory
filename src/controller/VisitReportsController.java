@@ -627,6 +627,10 @@ public class VisitReportsController implements Initializable {
         comboYear.setItems(yearList);
     }
     
+    /**
+     * Brings all the animal names listed in the database and loads the combo box with them.
+     * @throws SQLException 
+     */
     public void fillComboAnimal() throws SQLException{
         animalNameList = AnimalQueries.getAllAnimalNames();
         comboAnimal.setItems(animalNameList);

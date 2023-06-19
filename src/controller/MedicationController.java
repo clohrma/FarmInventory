@@ -4,6 +4,7 @@
  */
 package controller;
 
+import dao.AnimalQueries;
 import dao.JDBC;
 import dao.MedicationQueries;
 import java.io.IOException;
@@ -21,6 +22,8 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.ReadOnlyStringWrapper;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -55,6 +58,7 @@ public class MedicationController implements Initializable {
     
     int medID = -1;
     Dates dates = new Dates();
+    ObservableList<String> animalNameList = FXCollections.observableArrayList();
     
     @FXML
     private DatePicker datePurchaseDate;
@@ -217,15 +221,10 @@ public class MedicationController implements Initializable {
      * @throws SQLException 
      */
     public void fillComboAnimalFor() throws SQLException{
-        
-    String sql = "SELECT name FROM animal";
-        PreparedStatement ps = JDBC.connection.prepareStatement(sql);
-        ResultSet rSet = ps.executeQuery();
-        while(rSet.next()){
-            comboAnimalFor.getItems().add(rSet.getString("name"));
-         }
+        animalNameList = AnimalQueries.getAllAnimalNames();
+        comboAnimalFor.setItems(animalNameList);
     }
-    
+   
     /**
      * Get the information from the database for the selected medication and loads the text fields and combo boxes.
      * @param sentMedID The medication ID to search the database.

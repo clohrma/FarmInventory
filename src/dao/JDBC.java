@@ -17,11 +17,11 @@ public abstract class JDBC {
     private static final String protocol = "jdbc";
     private static final String vendor = ":mysql:";
     private static final String location = "//127.0.0.1:3306/";
-    private static final String databaseName = "farm_inventory";
+    private static final String databaseName = "farmtracker";
     private static final String jdbcUrl = protocol + vendor + location + databaseName + "?connectionTimeZone = SERVER";
     private static final String driver = "com.mysql.cj.jdbc.Driver"; 
-    private static final String userName = "root";
-    private static final String password = "Clohrman3800";
+    private static final String userName = "root"; //enter the database connections username here.
+    private static final String password = "Clohrman3800"; //enter the database connections password here.
     
     /**
      * This is used with getConnection, this is the connection return.

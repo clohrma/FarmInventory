@@ -84,7 +84,7 @@ public class LoginScreenController implements Initializable {
      * @throws SQLException 
      */
     public boolean usernamePasswordCheck(String name, String password) throws SQLException {
-        String sql = "SELECT * FROM user WHERE userName = ? AND uesrPassword = ?";
+        String sql = "SELECT * FROM loginuser WHERE userName = ? AND uesrPassword = ?";
         PreparedStatement statement = JDBC.getConnection().prepareStatement(sql);
         statement.setString(1, name);
         statement.setString(2, password);
