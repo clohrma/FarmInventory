@@ -21,7 +21,7 @@ public abstract class JDBC {
     private static final String jdbcUrl = protocol + vendor + location + databaseName + "?connectionTimeZone = SERVER";
     private static final String driver = "com.mysql.cj.jdbc.Driver"; 
     private static final String userName = "root"; //enter the database connections username here.
-    private static final String password = "Clohrman3800"; //enter the database connections password here.
+    private static final String password = ""; //enter the database connections password here.
     
     /**
      * This is used with getConnection, this is the connection return.
