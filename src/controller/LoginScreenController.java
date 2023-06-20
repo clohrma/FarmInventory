@@ -53,13 +53,19 @@ public class LoginScreenController implements Initializable {
         
         String uName = txtUsername.getText();
         String password = pwdPassword.getText();
-        
+        try{
         boolean loginCheck = usernamePasswordCheck(uName, password);
         if(loginCheck){
             switchScreens("/view/home.fxml", event);
         }
         else{
             error.ErrorAlert("Invalid Login", "Invalid Username and/or Password, please try again.");
+        }
+        }catch(NullPointerException e){
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Warning Dialog");
+            alert.setContentText("Make sure you put the correct password in the dao.JDBC.java file.");
+            alert.showAndWait();
         }
     }
     
